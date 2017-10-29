@@ -46,8 +46,8 @@ limitations under the License.
  **/
 function Text(string, x, y, font, size, outsideCanvas, align){
     //agbl edit
-    debugger;
-    console.log("am i doing text");
+    //debugger;
+    //console.log("am i doing text");
 
     /**Text used to display*/
     this.str = string;

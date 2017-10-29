@@ -83,7 +83,7 @@ function figure_Rectangle(x, y)
 {
     //agbl edit
     //this is where the kick off happens for creating a rectangle
-    debugger;
+   //debugger;
 
     var f = new Figure("Rectangle");
     f.style.fillStyle = FigureDefaults.fillStyle;
@@ -601,7 +601,7 @@ function figure_Text(x,y)
 {
     //agbl edit
     //this is where text generation is kicked off
-    debugger;
+    //debugger;
 
     var f = new Figure('Text');
     f.style.fillStyle = FigureDefaults.fillStyle;
