@@ -35,20 +35,26 @@ var connector_defaultConnectorTextBgStyle = "#ffffff";
  *@author Zack Newsham <zack_newsham@yahoo.co.uk>
  *@author Alex Gheorghiu <alex@scriptoid.com>
 */
+<<<<<<< HEAD
 function Connector(startPoint,endPoint,type, id){
     // agbl edit
     debugger;
     console.log("am I really not doing connector");
 
+=======
+function Connector(startPoint,midpoint,endPoint,type, id){
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
     /**Connector's id*/
     this.id = id;
-    
-    //agbl edit
-    console.log(this.id);
 
     /**An {Array} of {Point}s. They will be used to draw the connector*/
+<<<<<<< HEAD
     this.turningPoints = [startPoint,endPoint];
     
+=======
+    this.turningPoints = [startPoint,midpoint,endPoint];
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
     /**Type of connector. Ex. TYPE_STRAIGHT*/
     this.type = type;
 
@@ -73,8 +79,12 @@ function Connector(startPoint,endPoint,type, id){
     this.style.lineStyle = Style.LINE_STYLE_CONTINOUS;
 
     /**The text that will appear in the middle of the connector*/
+<<<<<<< HEAD
     //agbl edit
     this.middleText = new Text("hello", (startPoint.x + endPoint.x)/2+10, (startPoint.y +  endPoint.y) / 2 - 13, connector_defaultConnectorTextFont, connector_defaultConnectorTextSize);
+=======
+    this.middleText = new Text(connector_defaultConnectorTextStr, (startPoint.x + endPoint.x)/2+10, (startPoint.y +  endPoint.y) / 2 - 13, connector_defaultConnectorTextFont, connector_defaultConnectorTextSize);
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
     this.middleText.style.strokeStyle = connector_defaultConnectorTextStrokeStyle;
     this.middleText.style.fillStyle = connector_defaultConnectorTextFillStyle;
     this.middleText.bgStyle = connector_defaultConnectorTextBgStyle;
@@ -95,7 +105,11 @@ function Connector(startPoint,endPoint,type, id){
    
     /**Start style for connector. Ex: Connector.STYLE_NORMAL*/
     this.startStyle = Connector.STYLE_NORMAL;
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
     /**End style for connector. Ex: Connector.STYLE_FILLED_TRIANGLE*/
     this.endStyle = Connector.STYLE_FILLED_TRIANGLE;
 
@@ -108,11 +122,20 @@ function Connector(startPoint,endPoint,type, id){
 
 /**Straight connector type*/
 Connector.TYPE_STRAIGHT = 'straight';
+<<<<<<< HEAD
+=======
+/**Straight connector type with midpoint*/
+Connector.TYPE_STRMIDPOINT = 'straightMid';
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
 
 /**Jagged connector type*/
 Connector.TYPE_JAGGED = 'jagged';
 
+<<<<<<< HEAD
 /**Round connector type. Orthogonal angles are smoothed. 
+=======
+/**Round connector type. Orthogonal angles are smoothed.
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
  *TODO: Not implemented*/
 Connector.TYPE_ROUND = 'round';
 
@@ -165,7 +188,11 @@ Connector.load = function(o){
     newConnector.middleText = Text.load(o.middleText);
     
     newConnector.properties = BuilderProperty.loadArray(o.properties);
+<<<<<<< HEAD
    
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
     newConnector.endStyle = o.endStyle;
     newConnector.startStyle = o.startStyle;
 
@@ -192,7 +219,11 @@ Connector.loadArray = function(v){
 Connector.prototype = {
     
     constructor : Connector,
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
 
     /**
      *Compares to another Connector
@@ -257,7 +288,11 @@ Connector.prototype = {
         path.style = this.style;
         line.style = this.style;
         line1.style = this.style;
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
         path.addPrimitive(line);
         path.addPrimitive(line1);
         
@@ -332,9 +367,15 @@ Connector.prototype = {
                         //move to new start
                         context.moveTo(newPoint.x, newPoint.y);
                     }
+<<<<<<< HEAD
             
                     //end style
                     if(this.endStyle == Connector.STYLE_EMPTY_TRIANGLE && i == this.turningPoints.length -1){ //special case 
+=======
+
+                    //end style
+                    if(this.endStyle == Connector.STYLE_EMPTY_TRIANGLE && i == this.turningPoints.length -1){ //special case
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
                         //get the angle of the final line
                         var angle = Util.getAngle(this.turningPoints[i-1],this.turningPoints[i]);
                         //by alex: var newPoint = Util.getEndPoint(this.turningPoints[i], -Connector.ARROW_SIZE*Math.sin(Math.PI/180*Connector.ARROW_ANGLE*2), angle)
@@ -356,13 +397,18 @@ Connector.prototype = {
         this.paintEnd(context);
 
         this.paintText(context);
+<<<<<<< HEAD
         
         
+=======
+
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
         context.restore();
     },
-    
+
     /**
-     * @param {CanvasRenderingContext2D} context the context to draw 
+     * @param {CanvasRenderingContext2D} context the context to draw
      * */
     paintOrganic : function(context){
         //poly.style.strokeStyle = '#000000';
@@ -373,7 +419,11 @@ Connector.prototype = {
 //        var rPoints  = Util.collinearReduction(this.turningPoints);
         var rPoints  = this.turningPoints;
         Log.info("Connector:paint() - Number of reduced points: " + rPoints.length + " " + rPoints);
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
         //1 - Draw NURB based only on turning points
         var n = new NURBS(rPoints);
         n.style.strokeStyle = 'rgba(0,100,0,0.5)'; //green
@@ -382,13 +432,21 @@ Connector.prototype = {
         if(DIAGRAMO.debug){
             //Log.info("Nr of cubic curves " +  this.fragments.length);
             for(var f=0; f<n.fragments.length; f++){
+<<<<<<< HEAD
                 var fragment = n.fragments[f].clone();                
+=======
+                var fragment = n.fragments[f].clone();
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
                 fragment.style.lineWidth =  6;
                 fragment.style.strokeStyle = "rgb(" + f * 100 % 255 + "," + f * 50 % 255 + "," + f * 20 % 255 + ")";
                 fragment.paint(context);
             }
         }
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
         n.paint(context);
         //end 1
         
@@ -401,10 +459,14 @@ Connector.prototype = {
 //        //add controll points AND the middle of each segment (except first and last)
 //        for(var i=0; i < rPoints.length-1; i++){
 //            point = rPoints[i];
+<<<<<<< HEAD
 //            
+=======
+//
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
 //            //add point
 //            points.push(point.clone());
-//            
+//
 //            if(i == 0 || i == rPoints.length-2){ ///skip first and last middle
 //                continue;
 //            }
@@ -418,7 +480,11 @@ Connector.prototype = {
 //
 //        Log.info("Connector:paint() - New points: " + points);
 //        context.save();
+<<<<<<< HEAD
 //        //draw  
+=======
+//        //draw
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
 //        context.beginPath();
 //
 //        context.strokeStyle = '#00CC00';
@@ -428,14 +494,22 @@ Connector.prototype = {
 //        //small dots
 //        for(var p in points){
 //            context.fillRect(points[p].x - 1, points[p].y - 1 , 3, 3);
+<<<<<<< HEAD
 //        }       
+=======
+//        }
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
 //
 //        var n2 = new NURBS(points);
 //        n2.style.strokeStyle = 'rgba(0,0,100,0.5)'; //blue
 //        n2.paint(context);
 //        //end 2
 //
+<<<<<<< HEAD
 //        
+=======
+//
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
 //        //3 - Draw NURB based on turning points (except first and last) and middle of each segment
 //        points = [];
 //        var point = rPoints[0];
@@ -488,11 +562,15 @@ Connector.prototype = {
             context.lineJoin = "round";
             context.lineCap = "round";
             path.paint(context);
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
             context.restore();
         }
     },
-    
+
     paintEnd : function(context){
         //paint end style
         var path = null;
@@ -526,8 +604,13 @@ Connector.prototype = {
             context.restore();
         }
     },
+<<<<<<< HEAD
     
     
+=======
+
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
     paintVisualDebug : function (context){
         //paint debug points
         if(DIAGRAMO.debug){
@@ -535,11 +618,15 @@ Connector.prototype = {
             for(var i=0; i< this.turningPoints.length; i++){
                 context.moveTo(this.turningPoints[i].x, this.turningPoints[i].y);
                 context.arc(this.turningPoints[i].x, this.turningPoints[i].y, 3, 0, Math.PI*2, false);
-                
+
             //context.strokeText('' + Util.round(this.turningPoints[i].x,2) + ',' + Util.round(this.turningPoints[i].y,2), this.turningPoints[i].x + 5, this.turningPoints[i].y - 5);
             }
             context.stroke();
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
             //paint coordinates
             context.save();
             for(var i=0; i< this.turningPoints.length; i++){
@@ -548,16 +635,28 @@ Connector.prototype = {
             context.restore();
         }
     },
+<<<<<<< HEAD
     
     
     /**Paints the text of the connector
      *@param {Context} context - the 2D context of the canvas
      *@private 
+=======
+
+
+    /**Paints the text of the connector
+     *@param {Context} context - the 2D context of the canvas
+     *@private
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
      *@author Alex
      **/
     paintText : function(context){
         if(this.middleText.str != ''){
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
             //TODO: not so smart to paint the background of the text
             var oldFill = context.fillStyle;
             
@@ -816,6 +915,7 @@ Connector.prototype = {
         
         
 
+
         //START FIGURE
         var startConnectionPointOnConnector = CONNECTOR_MANAGER.connectionPointGetAllByParent(this.id)[0]; //fist ConnectionPoint on the Connector
         var glue  = CONNECTOR_MANAGER.glueGetByConnectionPointId(startConnectionPointOnConnector.id)[0];//the (only) Glue tied to ConnectionPoint
@@ -838,7 +938,11 @@ Connector.prototype = {
                     break;
                 case 3 * Math.PI/2: //west exit
                     startExitPoint = new Point(startFigure.getBounds()[0]-20, startPoint.y);
+<<<<<<< HEAD
                     break;                                            
+=======
+                    break;
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
             }
         }
 
@@ -883,9 +987,15 @@ Connector.prototype = {
 
         //1. is p1 == p2?
         if(p1.equals(p2)){
+<<<<<<< HEAD
             
         }
         
+=======
+
+        }
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
         //2. is p1 on a vertical or horizontal line with p2? S0
         //3. can we have a single intermediate point? S1
         //4. can we have 2 intermediate points? S2
@@ -927,11 +1037,19 @@ Connector.prototype = {
      * triggered the adjustement
      */
     adjust:function(matrix, point){
+<<<<<<< HEAD
         
         //Log.info('Adjusting...');
         if(this.type == Connector.TYPE_STRAIGHT){
             //Log.info("straight ");
             
+=======
+
+        //Log.info('Adjusting...');
+        if(this.type == Connector.TYPE_STRAIGHT){
+            //Log.info("straight ");
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
             var tempConPoint = CONNECTOR_MANAGER.connectionPointGetByParentAndCoordinates(this.id, point.x, point.y);
 
             //find index of the turning point
@@ -965,19 +1083,34 @@ Connector.prototype = {
             //Log.info("jagged ");
             var oldX = point.x;
             var oldY = point.y;
+<<<<<<< HEAD
             
             var tempConPoint = CONNECTOR_MANAGER.connectionPointGetByParentAndCoordinates(this.id, point.x, point.y);
             tempConPoint.transform(matrix);
             
+=======
+
+            var tempConPoint = CONNECTOR_MANAGER.connectionPointGetByParentAndCoordinates(this.id, point.x, point.y);
+            tempConPoint.transform(matrix);
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
             //are we starting from beginning or end, so we will detect the interval and direction
             var start,end,direction;
             if(point.equals(this.turningPoints[0])){//if the point is the starting Point
                 //Log.info("It is the starting point");
+<<<<<<< HEAD
                 
                 //adjust first turning point
                 this.turningPoints[0].x = tempConPoint.point.x;
                 this.turningPoints[0].y = tempConPoint.point.y;
             
+=======
+
+                //adjust first turning point
+                this.turningPoints[0].x = tempConPoint.point.x;
+                this.turningPoints[0].y = tempConPoint.point.y;
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
                 start = 1;
                 end = this.turningPoints.length;
                 direction = 1;
@@ -1004,7 +1137,11 @@ Connector.prototype = {
                 //we don't want to use them if they are on he exact spot
                 if(this.turningPoints[i].y != oldY
                     && this.turningPoints[i].x == oldX //same x
+<<<<<<< HEAD
                     && this.turningPoints[i] != CONNECTOR_MANAGER.connectionPointGetAllByParent(this.id)[0].point 
+=======
+                    && this.turningPoints[i] != CONNECTOR_MANAGER.connectionPointGetAllByParent(this.id)[0].point
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
                     && this.turningPoints[i] != CONNECTOR_MANAGER.connectionPointGetAllByParent(this.id)[1].point )
                     {
                     oldX = this.turningPoints[i].x;
@@ -1012,8 +1149,13 @@ Connector.prototype = {
                     this.turningPoints[i].x = this.turningPoints[i-direction].x;
                 }
                 else if(this.turningPoints[i].x != oldX
+<<<<<<< HEAD
                     && this.turningPoints[i].y == oldY 
                     && this.turningPoints[i] != CONNECTOR_MANAGER.connectionPointGetAllByParent(this.id)[0].point 
+=======
+                    && this.turningPoints[i].y == oldY
+                    && this.turningPoints[i] != CONNECTOR_MANAGER.connectionPointGetAllByParent(this.id)[0].point
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
                     && this.turningPoints[i] != CONNECTOR_MANAGER.connectionPointGetAllByParent(this.id)[1].point )
                     {
                     oldX = this.turningPoints[i].x;
@@ -1077,10 +1219,10 @@ Connector.prototype = {
 
     /**Adds user change.
      *@param {Object} userChange - user change to add. It's form is
-     * {align : '', delta: '', index: ''} where 
+     * {align : '', delta: '', index: ''} where
      *  align:  Connector.USER_CHANGE_VERTICAL_ALIGN | Connector.USER_CHANGE_HORIZONTAL_ALIGN
      *  delta: Numeric
-     *  index : the index of turning point     
+     *  index : the index of turning point
      *@author Artyom Pokatilov <artyom.pokatilov@gmail.com>
      **/
     addUserChange: function(userChange) {
@@ -1159,10 +1301,14 @@ Connector.prototype = {
     contains:function(x,y){
         var r = false;
         switch(this.type){
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
             case Connector.TYPE_STRAIGHT:
                 //just fall :)
-                
+
             case Connector.TYPE_JAGGED:
                 for(var i=0; i<this.turningPoints.length-1; i++){
                     var l = new Line(this.turningPoints[i],this.turningPoints[i+1]);
@@ -1172,15 +1318,19 @@ Connector.prototype = {
                     }
                 }
                 break;
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
             case Connector.TYPE_ORGANIC:
                 var n = new NURBS(this.turningPoints);
-                
+
                 r = n.contains(x, y);
-                
+
                 break;
         }
-        
+
         return r;
     },
 
@@ -1193,7 +1343,11 @@ Connector.prototype = {
     near:function(x,y,radius){
         var r = false;
         switch(this.type){
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
             case Connector.TYPE_STRAIGHT:
                 //just fall :)
                 
@@ -1205,18 +1359,23 @@ Connector.prototype = {
                         break;
                     }
                 }
-                
+
                 break;
-                
+
             case Connector.TYPE_ORGANIC:
                 var n = new NURBS(this.turningPoints);
-                
+
                 r = n.near(x, y, radius);
                 break;
-                
+
         }
+<<<<<<< HEAD
         
         return r;                
+=======
+
+        return r;
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
     },
 
 
@@ -1272,16 +1431,24 @@ Connector.prototype = {
 
             }
         } else if(this.type === Connector.TYPE_ORGANIC){
+<<<<<<< HEAD
             //TODO: Either compute the middle using pure NURB algorithm (and use t=0.5) or 
+=======
+            //TODO: Either compute the middle using pure NURB algorithm (and use t=0.5) or
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
             //base it on the curves already computed (but they might no be evenly distributes
-            //(or might not have the same length) to pick the middle of middle curve 
+            //(or might not have the same length) to pick the middle of middle curve
             //(if no. of curves is odd) or joining
             //point (if number of curves is even)
             var n = new NURBS(this.turningPoints);
-            
+
             var middle = n.getMiddle();
             Log.info("Middle is " + middle);
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
             return [middle.x, middle.y];
         }
 
@@ -1322,7 +1489,11 @@ Connector.prototype = {
         }
         return [minX, minY, maxX, maxY];
     },
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
     /**String representation*/
     toString:function(){
         return 'Connector : (id = ' + this.id
@@ -1407,18 +1578,31 @@ Connector.prototype = {
         if(this.middleText.str.length != 1){
             //paint white background
             var txtBounds = this.middleText.getBounds(); //this is actually an array of numbers [minX, minY, maxX, maxY]
+<<<<<<< HEAD
             
             var poly = new Polygon();
             
+=======
+
+            var poly = new Polygon();
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
             poly.addPoint(new Point(txtBounds[0], txtBounds[1]));
             poly.addPoint(new Point(txtBounds[2], txtBounds[1]));
             poly.addPoint(new Point(txtBounds[2], txtBounds[3]));
             poly.addPoint(new Point(txtBounds[0], txtBounds[3]));
             poly.style.fillStyle = "#FFFFFF";
+<<<<<<< HEAD
             
             r += poly.toSVG();
             
             
+=======
+
+            r += poly.toSVG();
+
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
             //paint actuall text
             r += this.middleText.toSVG();
         }
@@ -1447,19 +1631,19 @@ function ConnectionPoint(parentId,point,id, type){
     
     /**The {Point} that is behind this ConnectionPoint*/
     this.point = point.clone(); //we will create a clone so that no side effect will appear
-    
+
     /**Parent id (id of the Figure or Connector)*/
     this.parentId = parentId;
-    
+
     /**Type of ConnectionPoint. Ex: ConnectionPoint.TYPE_FIGURE*/
     this.type = type;
-    
+
     /**Current connection point color*/
     this.color = ConnectionPoint.NORMAL_COLOR;
-    
+
     /**Radius of the connection point*/
     this.radius = 3;
-    
+
     /**Serialization type*/
     this.oType = 'ConnectionPoint'; //object type used for JSON deserialization
 
@@ -1553,7 +1737,11 @@ ConnectionPoint.prototype = {
         && this.parentId == anotherConnectionPoint.parentId
         && this.type == anotherConnectionPoint.type
         && this.color == anotherConnectionPoint.color
+<<<<<<< HEAD
         && this.radius == anotherConnectionPoint.radius;    
+=======
+        && this.radius == anotherConnectionPoint.radius;
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
     },
 
     /**
@@ -1636,17 +1824,26 @@ ConnectionPoint.prototype = {
  **/
 function Glue(cp1Id,cp2Id,automatic){
     /**First shape's id (usually from a {Figure})*/
+<<<<<<< HEAD
     this.id1 = cp1Id;    
     
+=======
+    this.id1 = cp1Id;
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
     /**Second shape's id (usualy from a {Connector})*/
     this.id2 = cp2Id;
 
     /*By default all the Glues are created with the first number as Figure's id and second number as
      *Connector's id. In the future glues can be used to glue other types as well*/
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
     /**First id type (usually 'figure')*/
     this.type1 = 'figure';
-    
+
     /**First id type (usually 'connector')*/
     this.type2 = 'connector';
     
@@ -1706,10 +1903,17 @@ Glue.cloneArray = function(v){
 }
 
 Glue.prototype = {
+<<<<<<< HEAD
     
     constructor : Glue,
     
     
+=======
+
+    constructor : Glue,
+
+
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
     /**Clone current {Glue}
      **/
     clone: function(){
@@ -1743,4 +1947,8 @@ Glue.prototype = {
             + ', automatic = ' + this.automatic
             + ')';
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> parent of 906479a... Merge branch 'master' into ckand-dev
