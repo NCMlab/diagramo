@@ -354,7 +354,7 @@ function generateMatrix(){
 
     //get unique boxes to be our row and column headers
     for (var i = 0; i < CONNECTOR_MANAGER.connectionPoints.length; i++) {
-        if ((CONNECTOR_MANAGER.connectionPoints[i].type == "figure") && 
+        if ((CONNECTOR_MANAGER.connectionPoints[i].type == "figure") &&
             ($.inArray(CONNECTOR_MANAGER.connectionPoints[i].parentId, nodeArray)) == -1) {
             nodeArray.push(CONNECTOR_MANAGER.connectionPoints[i].parentId);
         }
@@ -2198,20 +2198,7 @@ function onMouseMove(ev){
                             var cmdTranslateFigure = new FigureTranslateCommand(selectedFigureId, translateMatrix);
                             History.addUndo(cmdTranslateFigure);
                             cmdTranslateFigure.execute();
-//doesnt really work but jank way to update midpoint when moving box,
-// should be a better way, look into it, for now moving on to look into glueing
-                            // for (var i=0; i < CONNECTOR_MANAGER.connectors.length; i++){
-                            //     var startPoint = CONNECTOR_MANAGER.connectors[i].turningPoints[0];
-                            //     var tempEndPoint = CONNECTOR_MANAGER.connectors[i].turningPoints[1];
-                            //     CONNECTOR_MANAGER.connectors[i].turningPoints[1] = new Point((tempEndPoint.x - startPoint.x)/2 + startPoint.x , (tempEndPoint.y - startPoint.y)/2 + startPoint.y);
-                            //     CONNECTOR_MANAGER.connectors[i].turningPoints[2] = tempEndPoint.clone();
-                            //     var connectionId = CONNECTOR_MANAGER.connectionPointGetAllByParent(CONNECTOR_MANAGER.connectors[i].id)[1].id;
-                            //     CONNECTOR_MANAGER.connectionPoints[connectionId] = new Point((tempEndPoint.x - startPoint.x)/2 + startPoint.x , (tempEndPoint.y - startPoint.y)/2 + startPoint.y);
-                            //
-                            //
-                            // }
-
-
+                            updateMidpointonFigureMove(selectedFigureId);
                             /*Algorithm described:
                             if figure belong to an existing container:
                                 if we moved it outside of current container (even partially?!)
@@ -2604,6 +2591,29 @@ function onMouseMove(ev){
         draw();
     }
     return false;
+}
+
+
+/**
+*method to force midpoint to update on figure move
+**/
+function updateMidpointonFigureMove(selectedFigureId){
+
+  for (var i=0; i < CONNECTOR_MANAGER.connectors.length; i++){
+      for (var j=0; j< CONNECTOR_MANAGER.glues.length; j++){
+    if (CONNECTOR_MANAGER.connectionPointGetById(CONNECTOR_MANAGER.glues[j].id1).parentId == selectedFigureId){
+                var cps = CONNECTOR_MANAGER.connectionPointGetAllByParent(CONNECTOR_MANAGER.connectors[i].id);
+                if (cps[0].id ==  CONNECTOR_MANAGER.glues[j].id2 || cps[2].id ==  CONNECTOR_MANAGER.glues[j].id2){
+                  var startPoint = CONNECTOR_MANAGER.connectors[i].turningPoints[0];
+                  var tempEndPoint = CONNECTOR_MANAGER.connectors[i].turningPoints[1];
+                  CONNECTOR_MANAGER.connectors[i].turningPoints[1] = new Point((tempEndPoint.x - startPoint.x)/2 + startPoint.x , (tempEndPoint.y - startPoint.y)/2 + startPoint.y);
+                  CONNECTOR_MANAGER.connectors[i].turningPoints[2] = tempEndPoint.clone();
+                  var connectionId = CONNECTOR_MANAGER.connectionPointGetAllByParent(CONNECTOR_MANAGER.connectors[i].id)[1].id;
+                  CONNECTOR_MANAGER.connectionPoints[connectionId].point = new Point((tempEndPoint.x - startPoint.x)/2 + startPoint.x , (tempEndPoint.y - startPoint.y)/2 + startPoint.y);
+                }
+              }
+    }
+  }
 }
 
 
