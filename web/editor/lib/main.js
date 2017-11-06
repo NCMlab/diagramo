@@ -354,7 +354,7 @@ function generateMatrix(){
 
     //get unique boxes to be our row and column headers
     for (var i = 0; i < CONNECTOR_MANAGER.connectionPoints.length; i++) {
-        if ((CONNECTOR_MANAGER.connectionPoints[i].type == "figure") && 
+        if ((CONNECTOR_MANAGER.connectionPoints[i].type == "figure") &&
             ($.inArray(CONNECTOR_MANAGER.connectionPoints[i].parentId, nodeArray)) == -1) {
             nodeArray.push(CONNECTOR_MANAGER.connectionPoints[i].parentId);
         }
@@ -2198,20 +2198,7 @@ function onMouseMove(ev){
                             var cmdTranslateFigure = new FigureTranslateCommand(selectedFigureId, translateMatrix);
                             History.addUndo(cmdTranslateFigure);
                             cmdTranslateFigure.execute();
-//doesnt really work but jank way to update midpoint when moving box,
-// should be a better way, look into it, for now moving on to look into glueing
-                            // for (var i=0; i < CONNECTOR_MANAGER.connectors.length; i++){
-                            //     var startPoint = CONNECTOR_MANAGER.connectors[i].turningPoints[0];
-                            //     var tempEndPoint = CONNECTOR_MANAGER.connectors[i].turningPoints[1];
-                            //     CONNECTOR_MANAGER.connectors[i].turningPoints[1] = new Point((tempEndPoint.x - startPoint.x)/2 + startPoint.x , (tempEndPoint.y - startPoint.y)/2 + startPoint.y);
-                            //     CONNECTOR_MANAGER.connectors[i].turningPoints[2] = tempEndPoint.clone();
-                            //     var connectionId = CONNECTOR_MANAGER.connectionPointGetAllByParent(CONNECTOR_MANAGER.connectors[i].id)[1].id;
-                            //     CONNECTOR_MANAGER.connectionPoints[connectionId] = new Point((tempEndPoint.x - startPoint.x)/2 + startPoint.x , (tempEndPoint.y - startPoint.y)/2 + startPoint.y);
-                            //
-                            //
-                            // }
-
-
+                            updateMidpointonFigureMove(selectedFigureId);
                             /*Algorithm described:
                             if figure belong to an existing container:
                                 if we moved it outside of current container (even partially?!)
@@ -2477,12 +2464,17 @@ function onMouseMove(ev){
         case STATE_CONNECTOR_PICK_FIRST:
             //change FCP (figure connection points) color
             var fCpId = CONNECTOR_MANAGER.connectionPointGetByXY(x, y, ConnectionPoint.TYPE_FIGURE); //find figure's CP
-
+            var fCpOverMidId = CONNECTOR_MANAGER.connectionPointGetByXY(x, y, ConnectionPoint.TYPE_CONNECTOR);  //find midpoint cp
             if(fCpId != -1){ //we are over a figure's CP
                 var fCp = CONNECTOR_MANAGER.connectionPointGetById(fCpId);
                 fCp.color = ConnectionPoint.OVER_COLOR;
                 //                canvas.style.cursor = 'crosshair';
                 selectedConnectionPointId = fCpId;
+            }
+            else if(fCpOverMidId != -1){
+                var cCp = CONNECTOR_MANAGER.connectionPointGetById(fCpOverMidId);
+                cCp.color = ConnectionPoint.OVER_COLOR;
+                selectedConnectionPointId = fCpOverMidId;
             }
             else{ //change back old connection point to normal color
                 if(selectedConnectionPointId != -1){
@@ -2606,6 +2598,68 @@ function onMouseMove(ev){
     return false;
 }
 
+
+/**
+*@param  selectedFigureId
+*method to force midpoint to update on figure move
+*provides the figureId,to be able to update all midpoints of any connectors attached to the figure beign moved
+**/
+function updateMidpointonFigureMove(selectedFigureId){
+//loop through connectors and glues to find the relevant connector
+  for (var i=0; i < CONNECTOR_MANAGER.connectors.length; i++){
+      for (var j=0; j< CONNECTOR_MANAGER.glues.length; j++){
+          if (CONNECTOR_MANAGER.connectionPointGetById(CONNECTOR_MANAGER.glues[j].id1).parentId == selectedFigureId){
+              var cps = CONNECTOR_MANAGER.connectionPointGetAllByParent(CONNECTOR_MANAGER.connectors[i].id);
+              if (cps[0].id ==  CONNECTOR_MANAGER.glues[j].id2 || cps[2].id ==  CONNECTOR_MANAGER.glues[j].id2){
+              //proper connector found, so update midpoint
+                  var startPoint = CONNECTOR_MANAGER.connectors[i].turningPoints[0];
+                  var tempEndPoint = CONNECTOR_MANAGER.connectors[i].turningPoints[1];
+                  var newMidpoint =new Point((tempEndPoint.x - startPoint.x)/2 + startPoint.x , (tempEndPoint.y - startPoint.y)/2 + startPoint.y);
+                  CONNECTOR_MANAGER.connectors[i].turningPoints[1] = newMidpoint.clone();
+                  CONNECTOR_MANAGER.connectors[i].turningPoints[2] = tempEndPoint.clone();
+                  var connectionId = CONNECTOR_MANAGER.connectionPointGetAllByParent(CONNECTOR_MANAGER.connectors[i].id)[1].id;
+                  CONNECTOR_MANAGER.connectionPoints[connectionId].point = newMidpoint.clone();
+                  //it is possible that the midpoint has another connector attached therefore go here
+                  updateConnectorOnFigureMove(CONNECTOR_MANAGER.connectors[i].id,newMidpoint);
+              }
+          }
+      }
+  }
+}
+
+/**
+*@param connectorMovingId - the id of the initial connector
+*@param newMidpoint -updated midpoint that the connector is attached to
+*this updates connectors that are pointing to/from another connector
+**/
+function updateConnectorOnFigureMove(connectorMovingId,newMidpoint){
+  //loop through glues to find the relevant glue point, ie when both connectionpoints are of type connector
+  for (var j=0; j< CONNECTOR_MANAGER.glues.length; j++){
+    if (CONNECTOR_MANAGER.connectionPointGetById(CONNECTOR_MANAGER.glues[j].id1).type == "connector" &&
+          CONNECTOR_MANAGER.connectionPointGetById(CONNECTOR_MANAGER.glues[j].id2).type == "connector"){
+            if (CONNECTOR_MANAGER.connectionPointGetAllByParent(connectorMovingId)[1].id == CONNECTOR_MANAGER.glues[j].id1){
+                var secondConnectorGluePoint = CONNECTOR_MANAGER.connectionPointGetById(CONNECTOR_MANAGER.glues[j].id2);
+                var ancillaryConnector = CONNECTOR_MANAGER.connectorGetById(secondConnectorGluePoint.parentId);
+                var ancillaryConnectorCps = CONNECTOR_MANAGER.connectionPointGetAllByParent(ancillaryConnector.id);
+                //the midpoint has another connector attached, but wedo not know if it is the head or the tail of the other connector
+                //therefore we need to verify which side of the connector is attached to the midpoint before we can update
+                  if (CONNECTOR_MANAGER.glues[j].id2 == ancillaryConnectorCps[0].id){
+                    //update 0 (tail) and midpoint
+                    CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[0].id].point =newMidpoint.clone();
+                    CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[1].id].point =new Point((ancillaryConnectorCps[2].point.x - newMidpoint.x)/2 + newMidpoint.x , (ancillaryConnectorCps[2].point.y - newMidpoint.y)/2 + newMidpoint.y);
+                    CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[0] = newMidpoint.clone();
+                    CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[1]= new Point((ancillaryConnectorCps[2].point.x - newMidpoint.x)/2 + newMidpoint.x , (ancillaryConnectorCps[2].point.y - newMidpoint.y)/2 + newMidpoint.y);
+                  }else if (CONNECTOR_MANAGER.glues[j].id2 == ancillaryConnectorCps[2].id) {
+                    //update 2(head) and midpoint
+                    CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[2].id].point =newMidpoint.clone();
+                    CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[1].id].point =new Point((ancillaryConnectorCps[2].point.x - newMidpoint.x)/2 + newMidpoint.x , (ancillaryConnectorCps[2].point.y - newMidpoint.y)/2 + newMidpoint.y);
+                    CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[2] = newMidpoint.clone();
+                    CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[1] = new Point((newMidpoint.x - ancillaryConnectorCps[0].point.x)/2 + ancillaryConnectorCps[0].point.x , (newMidpoint.y - ancillaryConnectorCps[0].point.y)/2 + ancillaryConnectorCps[0].point.y);
+                  }
+              }
+    }
+  }
+}
 
 /**Treats the mouse double click event
  *@param {Event} ev - the event generated when key is clicked twice
@@ -2804,7 +2858,7 @@ function connectorPickFirst(x, y, ev){
     }else if (fCpOverMidId != -1) { //are we over a midpoint?
       var cp = CONNECTOR_MANAGER.connectionPointGetById(fCpOverMidId);
       conCps[0].color = ConnectionPoint.OVER_COLOR;
-      CONNECTOR_MANAGER.glueCreate(fCpOverMidId, cp.id, false);
+      CONNECTOR_MANAGER.glueCreate(fCpOverMidId, conCps[0].id, false);
     }
     state = STATE_CONNECTOR_PICK_SECOND;
     Log.groupEnd();
@@ -3081,6 +3135,7 @@ function connectorMovePoint(connectionPointId, x, y, ev){
         CONNECTOR_MANAGER.connectorGetById(selectedConnectorId).turningPoints[1] = rMidPoint.clone();
         CONNECTOR_MANAGER.connectorGetById(selectedConnectorId).turningPoints[2] = rEndPoint.clone();
         //GLUES MANAGEMENT
+        updateConnectorOnFigureMove(con.id,rMidPoint);
         //remove all previous glues to {Connector}'s second {ConnectionPoint}
         CONNECTOR_MANAGER.glueRemoveAllBySecondId(firstConPoint.id);
 
@@ -3166,6 +3221,9 @@ function connectorMovePoint(connectionPointId, x, y, ev){
       CONNECTOR_MANAGER.connectorGetById(selectedConnectorId).turningPoints[0] = rStartPoint.clone();
       CONNECTOR_MANAGER.connectorGetById(selectedConnectorId).turningPoints[1] = rMidPoint.clone();
       CONNECTOR_MANAGER.connectorGetById(selectedConnectorId).turningPoints[2] = rEndPoint.clone();
+
+
+      updateConnectorOnFigureMove(con.id,rMidPoint);
         //GLUES MANAGEMENT
         //remove all previous glues to {Connector}'s second {ConnectionPoint}
         CONNECTOR_MANAGER.glueRemoveAllBySecondId(secondConPoint.id);
