@@ -2600,15 +2600,18 @@ function onMouseMove(ev){
 
 
 /**
+*@param  selectedFigureId
 *method to force midpoint to update on figure move
+*provides the figureId,to be able to update all midpoints of any connectors attached to the figure beign moved
 **/
 function updateMidpointonFigureMove(selectedFigureId){
-
+//loop through connectors and glues to find the relevant connector
   for (var i=0; i < CONNECTOR_MANAGER.connectors.length; i++){
       for (var j=0; j< CONNECTOR_MANAGER.glues.length; j++){
-    if (CONNECTOR_MANAGER.connectionPointGetById(CONNECTOR_MANAGER.glues[j].id1).parentId == selectedFigureId){
-                var cps = CONNECTOR_MANAGER.connectionPointGetAllByParent(CONNECTOR_MANAGER.connectors[i].id);
-                if (cps[0].id ==  CONNECTOR_MANAGER.glues[j].id2 || cps[2].id ==  CONNECTOR_MANAGER.glues[j].id2){
+          if (CONNECTOR_MANAGER.connectionPointGetById(CONNECTOR_MANAGER.glues[j].id1).parentId == selectedFigureId){
+              var cps = CONNECTOR_MANAGER.connectionPointGetAllByParent(CONNECTOR_MANAGER.connectors[i].id);
+              if (cps[0].id ==  CONNECTOR_MANAGER.glues[j].id2 || cps[2].id ==  CONNECTOR_MANAGER.glues[j].id2){
+              //proper connector found, so update midpoint
                   var startPoint = CONNECTOR_MANAGER.connectors[i].turningPoints[0];
                   var tempEndPoint = CONNECTOR_MANAGER.connectors[i].turningPoints[1];
                   var newMidpoint =new Point((tempEndPoint.x - startPoint.x)/2 + startPoint.x , (tempEndPoint.y - startPoint.y)/2 + startPoint.y);
@@ -2616,15 +2619,21 @@ function updateMidpointonFigureMove(selectedFigureId){
                   CONNECTOR_MANAGER.connectors[i].turningPoints[2] = tempEndPoint.clone();
                   var connectionId = CONNECTOR_MANAGER.connectionPointGetAllByParent(CONNECTOR_MANAGER.connectors[i].id)[1].id;
                   CONNECTOR_MANAGER.connectionPoints[connectionId].point = newMidpoint.clone();
+                  //it is possible that the midpoint has another connector attached therefore go here
                   updateConnectorOnFigureMove(CONNECTOR_MANAGER.connectors[i].id,newMidpoint);
-                }
               }
-    }
+          }
+      }
   }
 }
 
-
+/**
+*@param connectorMovingId - the id of the initial connector
+*@param newMidpoint -updated midpoint that the connector is attached to
+*this updates connectors that are pointing to/from another connector
+**/
 function updateConnectorOnFigureMove(connectorMovingId,newMidpoint){
+  //loop through glues to find the relevant glue point, ie when both connectionpoints are of type connector
   for (var j=0; j< CONNECTOR_MANAGER.glues.length; j++){
     if (CONNECTOR_MANAGER.connectionPointGetById(CONNECTOR_MANAGER.glues[j].id1).type == "connector" &&
           CONNECTOR_MANAGER.connectionPointGetById(CONNECTOR_MANAGER.glues[j].id2).type == "connector"){
@@ -2632,23 +2641,24 @@ function updateConnectorOnFigureMove(connectorMovingId,newMidpoint){
                 var secondConnectorGluePoint = CONNECTOR_MANAGER.connectionPointGetById(CONNECTOR_MANAGER.glues[j].id2);
                 var ancillaryConnector = CONNECTOR_MANAGER.connectorGetById(secondConnectorGluePoint.parentId);
                 var ancillaryConnectorCps = CONNECTOR_MANAGER.connectionPointGetAllByParent(ancillaryConnector.id);
-                if (CONNECTOR_MANAGER.glues[j].id2 == ancillaryConnectorCps[0].id){
-                  //update 0 and mid
-                  CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[0].id].point =newMidpoint.clone();
-                  CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[1].id].point =new Point((ancillaryConnectorCps[2].point.x - newMidpoint.x)/2 + newMidpoint.x , (ancillaryConnectorCps[2].point.y - newMidpoint.y)/2 + newMidpoint.y);
-                  CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[0] = newMidpoint.clone();
-                  CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[1]= new Point((ancillaryConnectorCps[2].point.x - newMidpoint.x)/2 + newMidpoint.x , (ancillaryConnectorCps[2].point.y - newMidpoint.y)/2 + newMidpoint.y);
-                }else if (CONNECTOR_MANAGER.glues[j].id2 == ancillaryConnectorCps[2].id) {
-                  //update 2 and mid
-                  CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[2].id].point =newMidpoint.clone();
-                  CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[1].id].point =new Point((ancillaryConnectorCps[2].point.x - newMidpoint.x)/2 + newMidpoint.x , (ancillaryConnectorCps[2].point.y - newMidpoint.y)/2 + newMidpoint.y);
-                  CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[2] = newMidpoint.clone();
-                  CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[1] = new Point((newMidpoint.x - ancillaryConnectorCps[0].point.x)/2 + ancillaryConnectorCps[0].point.x , (newMidpoint.y - ancillaryConnectorCps[0].point.y)/2 + ancillaryConnectorCps[0].point.y);
-                }
-            }
-
-          }
-        }
+                //the midpoint has another connector attached, but wedo not know if it is the head or the tail of the other connector
+                //therefore we need to verify which side of the connector is attached to the midpoint before we can update
+                  if (CONNECTOR_MANAGER.glues[j].id2 == ancillaryConnectorCps[0].id){
+                    //update 0 (tail) and midpoint
+                    CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[0].id].point =newMidpoint.clone();
+                    CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[1].id].point =new Point((ancillaryConnectorCps[2].point.x - newMidpoint.x)/2 + newMidpoint.x , (ancillaryConnectorCps[2].point.y - newMidpoint.y)/2 + newMidpoint.y);
+                    CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[0] = newMidpoint.clone();
+                    CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[1]= new Point((ancillaryConnectorCps[2].point.x - newMidpoint.x)/2 + newMidpoint.x , (ancillaryConnectorCps[2].point.y - newMidpoint.y)/2 + newMidpoint.y);
+                  }else if (CONNECTOR_MANAGER.glues[j].id2 == ancillaryConnectorCps[2].id) {
+                    //update 2(head) and midpoint
+                    CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[2].id].point =newMidpoint.clone();
+                    CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[1].id].point =new Point((ancillaryConnectorCps[2].point.x - newMidpoint.x)/2 + newMidpoint.x , (ancillaryConnectorCps[2].point.y - newMidpoint.y)/2 + newMidpoint.y);
+                    CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[2] = newMidpoint.clone();
+                    CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[1] = new Point((newMidpoint.x - ancillaryConnectorCps[0].point.x)/2 + ancillaryConnectorCps[0].point.x , (newMidpoint.y - ancillaryConnectorCps[0].point.y)/2 + ancillaryConnectorCps[0].point.y);
+                  }
+              }
+    }
+  }
 }
 
 /**Treats the mouse double click event
