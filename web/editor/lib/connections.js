@@ -1639,10 +1639,10 @@ function Glue(cp1Id,cp2Id,automatic){
      *Connector's id. In the future glues can be used to glue other types as well*/
 
     /**First id type (usually 'figure')*/
-    this.type1 = 'figure';
+    this.type1 = CONNECTOR_MANAGER.connectionPointGetById(cp1Id).type;
 
     /**First id type (usually 'connector')*/
-    this.type2 = 'connector';
+    this.type2 = CONNECTOR_MANAGER.connectionPointGetById(cp2Id).type;
 
     /**object type used for JSON deserialization*/
     this.oType = 'Glue';
