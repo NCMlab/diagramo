@@ -2647,14 +2647,16 @@ function updateConnectorOnFigureMove(connectorMovingId,newMidpoint){
                     //update 0 (tail) and midpoint
                     CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[0].id].point =newMidpoint.clone();
                     CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[1].id].point =new Point((ancillaryConnectorCps[2].point.x - newMidpoint.x)/2 + newMidpoint.x , (ancillaryConnectorCps[2].point.y - newMidpoint.y)/2 + newMidpoint.y);
-                    CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[0] = newMidpoint.clone();
-                    CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[1]= new Point((ancillaryConnectorCps[2].point.x - newMidpoint.x)/2 + newMidpoint.x , (ancillaryConnectorCps[2].point.y - newMidpoint.y)/2 + newMidpoint.y);
+                    var index = CONNECTOR_MANAGER.connectors.indexOf(ancillaryConnector)
+                    CONNECTOR_MANAGER.connectors[index].turningPoints[0] = newMidpoint.clone();
+                    CONNECTOR_MANAGER.connectors[index].turningPoints[1]= new Point((ancillaryConnectorCps[2].point.x - newMidpoint.x)/2 + newMidpoint.x , (ancillaryConnectorCps[2].point.y - newMidpoint.y)/2 + newMidpoint.y);
                   }else if (CONNECTOR_MANAGER.glues[j].id2 == ancillaryConnectorCps[2].id) {
                     //update 2(head) and midpoint
                     CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[2].id].point =newMidpoint.clone();
                     CONNECTOR_MANAGER.connectionPoints[ancillaryConnectorCps[1].id].point =new Point((ancillaryConnectorCps[2].point.x - newMidpoint.x)/2 + newMidpoint.x , (ancillaryConnectorCps[2].point.y - newMidpoint.y)/2 + newMidpoint.y);
-                    CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[2] = newMidpoint.clone();
-                    CONNECTOR_MANAGER.connectors[ancillaryConnector.id-1].turningPoints[1] = new Point((newMidpoint.x - ancillaryConnectorCps[0].point.x)/2 + ancillaryConnectorCps[0].point.x , (newMidpoint.y - ancillaryConnectorCps[0].point.y)/2 + ancillaryConnectorCps[0].point.y);
+                    var index = CONNECTOR_MANAGER.connectors.indexOf(ancillaryConnector)
+                    CONNECTOR_MANAGER.connectors[index].turningPoints[2] = newMidpoint.clone();
+                    CONNECTOR_MANAGER.connectors[index].turningPoints[1] = new Point((newMidpoint.x - ancillaryConnectorCps[0].point.x)/2 + ancillaryConnectorCps[0].point.x , (newMidpoint.y - ancillaryConnectorCps[0].point.y)/2 + ancillaryConnectorCps[0].point.y);
                   }
               }
     }
@@ -2800,7 +2802,7 @@ function onDblClick(ev) {
 function connectorPickFirst(x, y, ev){
     Log.group("connectorPickFirst");
     //create connector
-    var conId = CONNECTOR_MANAGER.connectorCreateMidPoint(new Point(x, y),new Point(x+5, y+5), new Point(x+10,y+10) /*fake cp*/, connectorType);
+    var conId = CONNECTOR_MANAGER.connectorCreateMidPoint(new Point(x, y),new Point(x+10, y+10), new Point(x+20,y+20) /*fake cp*/, connectorType);
     selectedConnectorId = conId;
     var con = CONNECTOR_MANAGER.connectorGetById(conId);
 
