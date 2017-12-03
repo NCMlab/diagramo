@@ -77,6 +77,8 @@ function Connector(startPoint,midpoint,endPoint,type, id){
     this.properties.push(new BuilderProperty("End Style", "endStyle",  BuilderProperty.TYPE_CONNECTOR_END));
     this.properties.push(new BuilderProperty('Line Width','style.lineWidth', BuilderProperty.TYPE_LINE_WIDTH));
     this.properties.push(new BuilderProperty('Line Style','style.lineStyle', BuilderProperty.TYPE_LINE_STYLE));
+    //ckand edit, added line equation as a property
+    this.properties.push(new BuilderProperty('Line Equation','style.lineEquation', BuilderProperty.TYPE_LINE_EQUATION));
     this.properties.push(new BuilderProperty('Color','style.strokeStyle', BuilderProperty.TYPE_COLOR));
     this.properties.push(new BuilderProperty('Text','middleText.str', BuilderProperty.TYPE_TEXT));
     this.properties.push(new BuilderProperty('Text Size', 'middleText.size', BuilderProperty.TYPE_TEXT_FONT_SIZE));

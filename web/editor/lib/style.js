@@ -18,7 +18,7 @@ limitations under the License.
 
 /**
  * A simple way of setting the style for a context
- * 
+ *
  * @this {Style}
  * @constructor
  * @author Zack Newsham <zack_newsham@yahoo.co.uk>
@@ -27,28 +27,28 @@ limitations under the License.
 function Style(){
     /**Font used*/
     this.font = null;
-    
+
     /**Stroke/pen style. Can be specified as '#FF3010' or 'rgb(200, 0, 0)'*/
     this.strokeStyle = null;
-    
+
     /**Fill style. Can be specified as '#FF3010' or 'rgb(200, 0, 0)'*/
     this.fillStyle = null;
-    
+
     /**Alpha/transparency value*/
     this.globalAlpha = null;
-    
+
     /**Composite value*/
     this.globalCompositeOperation = null;
-    
-    /**Line width. 
+
+    /**Line width.
      *@type {Integer}
      **/
     this.lineWidth = null;
-    
+
     /**
      *Line cap style
      *
-     *HTML5 Canvas: 
+     *HTML5 Canvas:
      *The (Canvas's) lineCap property determines how the end points of every line are drawn.
      *There are three possible values for this property and those are: butt, round and square.
      *By default this property is set to butt.
@@ -66,43 +66,46 @@ function Style(){
      *@see https://developer.mozilla.org/en/Canvas_tutorial/Applying_styles_and_colors#A_lineJoin_example
      **/
     this.lineJoin = this.STYLE_LINE_JOIN_MITER;
-    
+
     /**Shadow offset x. Not used yet*/
     this.shadowOffsetX = null;
-    
+
     /**Shadow offset y. Not used yet*/
     this.shadowOffsetY = null;
-    
+
     /**Shadow blur. Not used yet*/
     this.shadowBlur = null;
-    
+
     /**Shadow color. Not used yet*/
     this.shadowColor = null;
-    
+
     /**An {Array} of colors used in gradients*/
     this.colorStops = [];
-    
+
     /**An {Array} in form of [x0, y0, x1, y1] with figure bounds used in gradients*/
     this.gradientBounds = [];
-    
+
     /**Dash length used for dashed styles
      * @deprecated Trying to use setLineDash and lineDashOffset
      * */
     this.dashLength = 0;
-        
+
     /**
      * Describe the dash style. It contains a whole policy of dash styles.
-     * As this is a composite property made by 
+     * As this is a composite property made by
      * setDashLine (@see https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D#setLineDash%28%29)
      * and dashLineOffset (@see http://msdn.microsoft.com/en-us/library/ie/dn265060%28v=vs.85%29.aspx)
-     * I think it would be nice to group a dash style under 
-     * a single name (like: continuous, dotted or dashed)    
+     * I think it would be nice to group a dash style under
+     * a single name (like: continuous, dotted or dashed)
      * */
     this.lineStyle = null; //set to null so it can be inherited from parents
-    
+
+    //ckand edit, added line equation as a property
+    this.lineEquation = null; //set to null so it can be inherited from parents
+
     /**Image used*/
     this.image = null;
-    
+
     /**Serialization type*/
     this.oType = "Style";
 }
@@ -116,6 +119,19 @@ Style.LINE_STYLES = {
     'continuous' : {'lineDash' : [], 'lineDashOffset': 0, 'lineCap' : 'round'},
     'dotted' : {'lineDash' : [1,2], 'lineDashOffset': 0, 'lineCap' : 'round'},
     'dashed' : {'lineDash' : [4,4], 'lineDashOffset': 0, 'lineCap' : 'round'}
+};
+
+//ckand edit, added line equation as a property
+Style.LINE_EQUATION_LINEAR = 'linear';
+Style.LINE_EQUATION_QUADRATIC = 'quadratic';
+Style.LINE_EQUATION_EXPONENTIAL = 'exponential';
+
+//ckand edit, added line equation as a property,
+//This may not be needed but leaving it just in case .
+Style.LINE_EQUATIONS = {
+  'linear' : 'lin',
+  'quadratic' : 'quad',
+  'exponential' : 'exp'
 };
 
 /**Loads a style from a JSONObject
@@ -138,6 +154,8 @@ Style.load = function(o){
     newStyle.colorStops = o.colorStops;
     newStyle.dashLength = o.dashLength;
     newStyle.lineStyle = o.lineStyle;
+    //ckand edit, added line equation as a property
+    newStyle.lineEquation = o.lineEquation;
     newStyle.image = o.image;
 
     return newStyle;
@@ -146,22 +164,22 @@ Style.load = function(o){
 Style.prototype={
     /**Round join*/
     STYLE_LINE_JOIN_ROUND: 'round',
-    
+
     /**Bevel join*/
     STYLE_LINE_JOIN_BEVEL: 'bevel',
-    
+
     /**Mitter join*/
     STYLE_LINE_JOIN_MITER: 'miter',
-    
+
     /**Butt cap*/
     STYLE_LINE_CAP_BUTT: 'butt',
-    
+
     /**Round cap*/
     STYLE_LINE_CAP_ROUND: 'round',
-    
+
     /**Square cap*/
     STYLE_LINE_CAP_SQUARE: 'square',
-    
+
     constructor : Style,
 
 
@@ -170,12 +188,12 @@ Style.prototype={
      **/
     setupContext:function(context){
         for(var propertyName in this){
-            if(this[propertyName] != null && propertyName != undefined    
-                && propertyName !== "gradientBounds" && propertyName !== "colorStops" 
+            if(this[propertyName] != null && propertyName != undefined
+                && propertyName !== "gradientBounds" && propertyName !== "colorStops"
                 && propertyName !== "image"
-                    
+
                 //iPad's Safari is very picky about this and for a reason (see #118)
-                && propertyName !== "constructor" 
+                && propertyName !== "constructor"
                 )
             {
                 try{
@@ -202,53 +220,73 @@ Style.prototype={
             context.fillStyle = lin;
 //            this.fillStyle = lin;
         }
-        
-        
+
+
         //Setup the dashed policy
         if(this.lineStyle != null){
             var lineStyle = Style.LINE_STYLES[this.lineStyle];
             var lineDash = lineStyle['lineDash'];
-            
+
             /**Now that we have the lineDash we need to scale it according to
              * lineWidth. As each dash style must scale differently we need to
              * treat each case separatly*/
             var scalledLineDash = [];
-            
+
             switch(this.lineStyle){
                 case Style.LINE_STYLE_CONTINOUS:
-                    //do nothing 
+                    //do nothing
                     scalledLineDash = lineDash;
                     break;
-                    
+
                 case Style.LINE_STYLE_DOTTED:
                     //Scale all pieces of a pattern except first dot
-                    for(var i=0;i<lineDash.length; i++){                        
+                    for(var i=0;i<lineDash.length; i++){
                         if(i==0){
                             scalledLineDash.push(lineDash[i]);
                         }
                         else{
                             scalledLineDash.push(lineDash[i] * context.lineWidth);
-                        }                        
+                        }
                     }
                     break;
-                    
+
                 case Style.LINE_STYLE_DASHED:
-                    //Scale all pieces of a pattern 
+                    //Scale all pieces of a pattern
                     for(var i=0;i<lineDash.length; i++){
                         scalledLineDash.push(lineDash[i] * context.lineWidth);
                     }
-                    break;    
+                    break;
             }
-            
+
+
+
             context.setLineDash(scalledLineDash);
             context.lineCap = lineStyle['lineCap'];
             this.lineCap = lineStyle['lineCap'];
         }
-        
+
+        //ckand edit
+        //Setup the colour  changing based on what the line equation is
+        if(this.lineEquation != null){
+            //based on equation, change the colour
+            switch(this.lineEquation){
+                case Style.LINE_EQUATION_LINEAR:
+                    this.strokeStyle = "#000000"
+                    break;
+
+                case Style.LINE_EQUATION_QUADRATIC:
+                    this.strokeStyle = "#ff0000"
+                    break;
+
+                case Style.LINE_EQUATION_EXPONENTIAL:
+                    this.strokeStyle = "#000080"
+                    break;
+            }
+          }
 //        if(this.lineDashOffset != null && this.lineDashOffset > 0 ){
 //            context.lineDashOffset = this.lineDashOffset;
 //        }
-        
+
 
         if(this.image != null && Browser.msie){
             var ptrn = context.createPattern(this.image,'no-repeat');
@@ -392,7 +430,7 @@ Style.prototype={
         if(!anotherStyle instanceof Style){
             return false;
         }
-        
+
         //TODO: test members
 
         return true;
@@ -416,4 +454,3 @@ Style.prototype={
     }
 
 }
-

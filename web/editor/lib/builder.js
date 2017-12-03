@@ -24,13 +24,13 @@ limitations under the License.
  *
  * @constructor
  * @this {Builder}
- * 
+ *
  *  Builder allows for an {Array} of {BuilderProperty}'s to be displayed in a property panel,
  *  edited values update the owner
  *  @author Zack Newsham <zack_newsham@yahoo.co.uk>
  **/
 function Builder(){
-    
+
 }
 
 /**Image base path*/
@@ -229,7 +229,7 @@ Builder.constructCanvasPropertiesPanel = function(DOMObject, canvasProps){
 
     btnUpdate.onclick = function(){
         //update canvas props
-        
+
         Log.group("builder.js->constructCanvasPropertiesPanel()->Canvas update");
         //Log.info('Nr of actions in Undo system: ' + History.ACTIONS.length);
 
@@ -252,7 +252,7 @@ Builder.constructCanvasPropertiesPanel = function(DOMObject, canvasProps){
             undo.execute();
             History.addUndo(undo);
         }
-        
+
 
         //Log.info('Nr of actions in Undo system: ' + History.ACTIONS.length);
         Log.groupEnd();
@@ -302,10 +302,10 @@ Builder.constructCanvasPropertiesPanel = function(DOMObject, canvasProps){
 
 
 /** The structure that will declare any visible and changable property of a shape.
- * 
+ *
  *  Note:  A {BuilderProperty} DOES NOT STORE THE VALUE OF THE PROPERTY but only
  * describe what properties of a {Style} are exposed and how the {Builder} will
- * create interface (fragments) for user in properties panel. 
+ * create interface (fragments) for user in properties panel.
  *
  * @constructor
  * @this {Builder}
@@ -351,6 +351,10 @@ BuilderProperty.TYPE_LINE_WIDTH = 'LineWidth';
 /**Line width property style*/
 BuilderProperty.TYPE_LINE_STYLE = 'LineStyle';
 
+/**Line equation property style*/
+//ckand edit, added line equation as a property
+BuilderProperty.TYPE_LINE_EQUATION = 'LineEquation';
+
 /**Image Fill type*/
 BuilderProperty.TYPE_IMAGE_FILL = 'ImageFill';
 
@@ -381,6 +385,14 @@ BuilderProperty.LINE_STYLES = [
     {Text: 'Continous', Value: 'continuous'},
     {Text: 'Dotted', Value: 'dotted'},
     {Text: 'Dashed',Value: 'dashed'}
+];
+
+/**Line Equations*/
+//ckand edit, added line equation as a property
+BuilderProperty.LINE_EQUATIONS = [
+    {Text: 'Linear', Value: 'linear'},
+    {Text: 'Quadratic', Value: 'quadratic'},
+    {Text: 'Exponential',Value: 'exponential'}
 ];
 
 /**Font sizes*/
@@ -434,7 +446,7 @@ BuilderProperty.loadArray = function(v){
 }
 
 BuilderProperty.prototype = {
-    
+
     constructor : BuilderProperty,
 
     toString:function(){
@@ -446,7 +458,7 @@ BuilderProperty.prototype = {
             && this.name == anotherBuilderProperty.name
             && this.property == anotherBuilderProperty.property;
     },
-    
+
     /**
      *Generates a HTML fragment to allow to edit its property.
      *For example if current property is a color then this method will
@@ -469,7 +481,7 @@ BuilderProperty.prototype = {
         else if(this.type === BuilderProperty.TYPE_SINGLE_TEXT){
             this.generateSingleTextCode(DOMObject,figureId);
         }
-        else if(this.type === BuilderProperty.TYPE_TEXT_FONT_SIZE){            
+        else if(this.type === BuilderProperty.TYPE_TEXT_FONT_SIZE){
             this.generateArrayCode(DOMObject,figureId, BuilderProperty.FONT_SIZES);
 //            this.generateFontSizesCode(DOMObject,figureId);
         }
@@ -490,6 +502,10 @@ BuilderProperty.prototype = {
         }
         else if(this.type === BuilderProperty.TYPE_LINE_STYLE){
             this.generateArrayCode(DOMObject,figureId, BuilderProperty.LINE_STYLES);
+        }
+        //ckand edit, added line equation as a property
+        else if(this.type === BuilderProperty.TYPE_LINE_EQUATION){
+            this.generateArrayCode(DOMObject,figureId, BuilderProperty.LINE_EQUATIONS);
         }
         else if(this.type === BuilderProperty.TYPE_URL){
             this.generateURLCode(DOMObject,figureId);
@@ -524,7 +540,7 @@ BuilderProperty.prototype = {
                                 updateShape(figureId, property, this.checked)
                             }
                         }(figureId, this.property);
-                        
+
         DOMObject.appendChild(div);
     },
 
@@ -676,7 +692,7 @@ BuilderProperty.prototype = {
     generateArrayCode:function(DOMObject, figureId, v){
 //        Log.info("Font size length: " + v.length);
         var uniqueId = new Date().getTime();
-        
+
         var value = this.getValue(figureId);
 
         var div = document.createElement("div");
@@ -715,16 +731,16 @@ BuilderProperty.prototype = {
                 icon.className = 'prop-icon';
                 icon.src = Builder.IMAGE_LINESTYLE_ICON_PATH;
                 labelDiv.appendChild(icon);
-                break;                 
+                break;
         }
 
         div.appendChild(labelDiv);
-        
+
         var select = document.createElement("select");
         select.style.cssText ="float: right;";
         select.id = this.property; // for DOM manipulation
         div.appendChild(select);
-        
+
         for(var i=0; i< v.length; i++){
             var option = document.createElement("option");
             option.value = v[i].Value;
@@ -744,7 +760,7 @@ BuilderProperty.prototype = {
 
         DOMObject.appendChild(div);
     },
-    
+
 
     /**
      *Used to generate a color picker
@@ -754,7 +770,7 @@ BuilderProperty.prototype = {
      */
     generateColorCode: function(DOMObject, figureId){
         var value = this.getValue(figureId);
-       
+
         var uniqueId = new Date().getTime();
         var div = document.createElement("div");
         div.className = "line";
@@ -854,48 +870,48 @@ BuilderProperty.prototype = {
 
     /**We use this to return a value of the property for a figure,
      *Similar to Javas Class.forname...sort of anyway
-     *We need this because passing direct references to simple data types (including strings) 
+     *We need this because passing direct references to simple data types (including strings)
      *only passes the value, not a reference to that value (call by value not by reference)
      *
      *@param{Number} figureId - the id of the shape {Figure} or {Connector} we are using, could also be the canvas (figureId = 'a')
      */
     getValue:function(figureId){
-        //Is it a Figure? 
+        //Is it a Figure?
         var obj = STACK.figureGetById(figureId);
-        
+
         //Is it a Connector ?
         if(obj == null){ //ok so it's not a Figure...so it should be a Connector
             obj = CONNECTOR_MANAGER.connectorGetById(figureId);
-        }                
-        
+        }
+
         //Is it the Canvas?
         if(obj == null){
             if(figureId == "canvas"){
                 obj = canvas;
             }
         }
-        
+
         //Is it a Container?
         if(obj == null){
             obj = STACK.containerGetById(figureId);
         }
         Log.debug("Unsplit property: " + this.property);
-        
+
         var propertyAccessors = this.property.split(".");
 //        Log.info("BuilderProperty::getValue() : propertyAccessors : " + propertyAccessors );
         for(var i = 0; i<propertyAccessors.length-1; i++){
 //            Log.info("\tBuilderProperty::getValue() : i = " + i  + ' name= ' + propertyAccessors[i]);
             obj = obj[propertyAccessors[i]];
         }
-        
+
         //Log.info("Object type: " + obj.oType);
-        
-        
+
+
         var propName = propertyAccessors[propertyAccessors.length -1];
         //Log.info("Property name: " + propName);
-        
+
         var propGet = "get" + Util.capitaliseFirstLetter(propName);
-        
+
         //null is allowed, undefined is not
         if(propGet in obj){ //@see https://developer.mozilla.org/en/JavaScript/Reference/Operators/Special_Operators/in_Operator
             return obj[propGet]();
@@ -912,13 +928,13 @@ BuilderProperty.prototype = {
 /**
  * This instance is responsible for creating and updating Text Editor Popup.
  * Text Editor Popup is made out of:
- *  - editor - a <div> (inside #container <div>) that contains the text and reflects the 
+ *  - editor - a <div> (inside #container <div>) that contains the text and reflects the
  *  - tools - a <div> (inside #container <div>) that will contain all the buttons and options to format text
- *  
+ *
  * @constructor
  * @this {TextEditorPopup}
  * @param {HTMLElement} editor - the DOM object (a <div> inside editor page) to create Text Editor Popup
- * @param {HTMLElement} tools - the DOM object (a <div> inside editor page) to create Text Editor Tools 
+ * @param {HTMLElement} tools - the DOM object (a <div> inside editor page) to create Text Editor Tools
  * @param  shape - the {Figure} or {Connector} - parent of Text primitive
  * @param {Number} textPrimitiveId - the id value of Text primitive child of shape for which the properties will be displayed
  * @author Artyom Pokatilov <artyom.pokatilov@gmail.com>
@@ -960,9 +976,9 @@ TextEditorPopup.UNDERLINED_PROPERTY_ENDING = 'underlined';
 
 
 TextEditorPopup.prototype = {
-    
+
     constructor : TextEditorPopup,
-    
+
     /**
      *Returns true if target shape of TextEditorPopup is a Connector
      *@return {Boolean} - true shape property is a connector
@@ -971,8 +987,8 @@ TextEditorPopup.prototype = {
     shapeIsAConnector : function (){
         return this.shape.oType === "Connector";
     },
-            
-      
+
+
 
     /**
     *Creates DOM structure and bind events
@@ -991,7 +1007,7 @@ TextEditorPopup.prototype = {
                        this.shape.properties[i].injectInputArea(this.editor, this.shape.id);
                        textarea = this.editor.getElementsByTagName('textarea')[0];
 
-                       // remove all <br> tags from text-editor as they were added by injectInputArea method 
+                       // remove all <br> tags from text-editor as they were added by injectInputArea method
                        removeNodeList(this.editor.getElementsByTagName('br')); //defined in util.js
 
                        // set Text editor properties on initialization
@@ -1022,8 +1038,8 @@ TextEditorPopup.prototype = {
        // select all text inside textarea (like in Visio)
        setSelectionRange(textarea, 0, textarea.value.length);
    },
-           
-           
+
+
     /**
      * Changing property inside Text Editor
      * provides WYSIWYG functionality
@@ -1086,7 +1102,7 @@ TextEditorPopup.prototype = {
 
         this.placeAndAutoSize();
     },
-            
+
 
     /**
      *Places and sets size to the property panel
@@ -1109,7 +1125,7 @@ TextEditorPopup.prototype = {
         // change coordinates of editing Text primitive to include padding and border of Text Editor
         var leftCoord = textBounds[0] - defaultEditorBorderWidth - defaultEditorPadding;
         var topCoord = textBounds[1] - defaultEditorBorderWidth - defaultEditorPadding;
-        
+
         var textareaWidth = textBounds[2] - textBounds[0];
         var textareaHeight = textBounds[3] - textBounds[1];
 
@@ -1137,10 +1153,10 @@ TextEditorPopup.prototype = {
         this.editor.style.top = topCoord + "px";
 
 
-        // visibility: 'hidden' allows us to get proper size but 
+        // visibility: 'hidden' allows us to get proper size but
         // without getting strange visual artefacts (tiggered by settings positions & other)
         this.tools.style.visibility = 'hidden';
-        
+
         // We set it to the left upper corner to get it's objective size
         this.tools.style.left = '0px';
         this.tools.style.top = '0px';
@@ -1153,7 +1169,7 @@ TextEditorPopup.prototype = {
 
         // define toolbox left position
         var toolboxLeft = leftCoord;
-        
+
         // get width of work area (#container <div> from editor)
         var workAreaWidth = getWorkAreaContainer().offsetWidth;
 
@@ -1173,18 +1189,18 @@ TextEditorPopup.prototype = {
 
         this.tools.style.left = toolboxLeft + "px";
         this.tools.style.top = toolboxTop + "px";
-        
+
         // return normal visibility to toolbox
         this.tools.style.visibility = 'visible';
 
         textarea.style.width = textareaWidth + "px";
         textarea.style.height = textareaHeight + "px";
     },
-     
+
     /**
     *Removes DOM structure of editor and it's tools
     *@author Artyom Pokatilov <artyom.pokatilov@gmail.com>
-    **/        
+    **/
     destroy : function (){
         this.editor.className = '';
         this.editor.style.cssText = '';
@@ -1194,8 +1210,8 @@ TextEditorPopup.prototype = {
         this.tools.style.cssText = '';
         this.tools.innerHTML = '';
     },
-    
-    
+
+
     /**
     *Returns true if mouse clicked inside TextEditorPopup
     *@param {Event} e - mouseDown event object
@@ -1220,7 +1236,7 @@ TextEditorPopup.prototype = {
            || target.id === 'color_selector'
            || target.parentNode.id === 'color_selector'
            || target.parentNode.parentNode.id === 'color_selector';
-   
+
        return inside;
    },
 
@@ -1250,5 +1266,5 @@ TextEditorPopup.prototype = {
         var textarea = this.editor.getElementsByTagName('textarea')[0];
         textarea.onblur();
     }
-   
+
 };
