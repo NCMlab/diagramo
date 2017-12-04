@@ -119,8 +119,10 @@ function figure_Rectangle(x, y)
 
     f.addPrimitive(r);
 
-    var t2 = new Text(FigureDefaults.textStr, x + FigureDefaults.segmentSize/2, y + rectangleHeight/2, FigureDefaults.textFont, FigureDefaults.textSize);
-    t2.style.fillStyle = FigureDefaults.textColor;
+    //agbl edit
+    //debugger;
+    //FigureDefaults.textStr
+    var t2 = new Text("Figure " + f.id, x + FigureDefaults.segmentSize/2, y + rectangleHeight/2, FigureDefaults.textFont, FigureDefaults.textSize);    t2.style.fillStyle = FigureDefaults.textColor;
 
     f.addPrimitive(t2);
 

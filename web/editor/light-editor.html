@@ -134,7 +134,6 @@
         <script type="text/javascript" src="./assets/javascript/colorPicker_new.js"></script>
         <link rel="stylesheet" media="screen" type="text/css" href="./assets/css/colorPicker_new.css" />
 
-
         <!--[if IE]>
         <script src="./assets/javascript/excanvas.js"></script>
         <![endif]-->
@@ -230,11 +229,7 @@
                                 eFigure.addEventListener('mousedown', function (figureFunction, figureThumbURL){
                                     return function(evt) {
                                         evt.preventDefault();
-                                        //Log.info("editor.php:buildPanel: figureFunctionName:" + figureFunctionName);
 
-                                        //agbl edit
-                                      //  debugger;
-                                        console.log("do we ever get here");
                                         //just prints figure_Text?
                                         console.log(figureFunction);
                                         console.log(figureThumbURL);
@@ -284,8 +279,8 @@
 
             <!--THE canvas-->
             <div style="width: 100%">
-                <div  id="container" style = "left: 50px;">
-                    <canvas id="a" width="1000" height="600" style="width:1000px;">
+                <div  id="container">
+                    <canvas id="a" width="800" height="600">
                         Your browser does not support HTML5. Please upgrade your browser to any modern version.
                     </canvas>
                     <div id="text-editor"></div>
@@ -303,18 +298,66 @@
                 </div>
 
                 <!--agbl edit-->
-                <div id="matrix">
-                    Matrix: <textarea id="matrixgen">Enter text here...</textarea><br><br>
+                <div style="height:100px; overflow-y:auto;"; id="adjacency-matrix">
+                    Adjacency Matrix: <br><textarea style="resize: none; white-space: nowrap; overflow-x: auto;"; id="adjacency-matrix-holder">Enter text here...</textarea><br><br>
 
-                    <button onclick="myFunction()">Generate Matrix</button>
+                    <button id = "buttonAdjacencyMatrix" onclick="myFunction()">Generate Adjacency Matrix</button>
                     <script>
                     function myFunction() {
-                        document.getElementById("matrixgen").value = generateMatrix();
+                        document.getElementById("adjacency-matrix-holder").value = generateAdjacencyMatrix();
+
+                        var modal = document.getElementById('myModal');
+                        var span = document.getElementsByClassName("close")[0];
+                        var tableHolder = document.getElementById('modalTableHolder');
+
+                        modal.style.display = "block";
+                        tableHolder.innerHTML = generateAdjacencyMatrixTable();
+
+                        // When the user clicks on <span> (x), close the modal
+                        span.onclick = function() {
+                            modal.style.display = "none";
+                        }
+
+                        // When the user clicks anywhere outside of the modal, close it
+                        window.onclick = function(event) {
+                            if (event.target == modal) {
+                                modal.style.display = "none";
+                            }
+                        }
+                    }
+                    </script>
+                </div>
+
+                <div style="height:100px; overflow-y:auto;"; id="interaction-matrix">
+                    Interaction Matrix: <br><textarea style="resize: none;  white-space: nowrap; overflow-x: auto;"; id="interaction-matrix-holder">Enter text here...</textarea><br><br>
+
+                    <button id = "buttonInteractionMatrix" onclick="newFunction()">Generate Interaction Matrix</button>
+                    <script>
+                    function newFunction() {
+                        document.getElementById("interaction-matrix-holder").value = generateInteractionMatrix();
+
+                        var modal = document.getElementById('myModal');
+                        var span = document.getElementsByClassName("close")[0];
+                        var tableHolder = document.getElementById('modalTableHolder');
+
+                        modal.style.display = "block";
+                        tableHolder.innerHTML = generateInteractionMatrixTable();
+
+                        // When the user clicks on <span> (x), close the modal
+                        span.onclick = function() {
+                            modal.style.display = "none";
+                        }
+
+                        // When the user clicks anywhere outside of the modal, close it
+                        window.onclick = function(event) {
+                            if (event.target == modal) {
+                                modal.style.display = "none";
+                            }
+                        }
                     }
                     </script>
                 </div>
             </div>
-
         </div>
 
         <!--The import panel-->
@@ -377,5 +420,15 @@
         </script>
         <br/>
          <? //require_once dirname(__FILE__) . '/common/analytics.php';?>
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+          <!-- Modal content -->
+          <div id="myModalContent" class="modal-content">
+            <span id="myClose" class="close">&times;</span>
+            <div id="modalTableHolder"></div>
+          </div>
+        </div>
     </body>
 </html>

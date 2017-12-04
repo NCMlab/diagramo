@@ -9,32 +9,89 @@
 #1AA851 green
 #32B050 light green
 */
-.message {color: green;}
-.error {color: red; }
 
-body{
-    top:0;
+.message {
+    color: green;
+}
+.error {
+    color: red;
+}
+/* The Modal (background) */
+
+.modal {
+    display: none;
+    /* Hidden by default */
+    
+    position: fixed;
+    /* Stay in place */
+    
+    z-index: 100;
+    /* Sit on top */
+    
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    
+    height: 100%;
+    /* Full height */
+    
+    overflow: auto;
+    /* Enable scroll if needed */
+    
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+/* Modal Content/Box */
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    /* 15% from the top and centered */
+    
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    /* Could be more or less, depending on screen size */
+}
+/* The Close Button */
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+body {
+    top: 0;
     margin: 0;
     padding: 0;
     background-color: #F6F6F6;
 }
-
-#header{
+#header {
     height: 36px;
     background-image: url('../images/logo_background.png');
-    background-repeat:repeat-x;
+    background-repeat: repeat-x;
     background-position: top left;
     /*border: 1px solid black;*/
+    
     padding: 0;
     margin: 0;
     vertical-align: middle;
     z-index: 2;
 }
-
-#content{
+#content {
     background-color: white;
 }
-
 /*
 #menu {
     width: 100%;
@@ -46,21 +103,22 @@ body{
 }
 */
 
-#actions{
+#actions {
     /*padding-left: 122px;*/
+    
     height: 36px;
     background-image: url('../images/logo_background.png');
-    background-repeat:repeat-x;
+    background-repeat: repeat-x;
     background-position: top left;
     /*border: 1px solid #E5E5E5;*/
     /*background-color: #F6F6F6;*/
     /*padding-top: 5px;*/
     /*overflow: hidden;*/
+    
     padding: 6px 4px 6px 10px;
     z-index: 2;
 }
-
-#editor{
+#editor {
     position: fixed;
     top: 72px;
     bottom: 0px;
@@ -68,38 +126,33 @@ body{
     z-index: 2;
     /*border: 1px solid red;*/
 }
-
 .separator {
-    vertical-align:middle; 
+    vertical-align: middle;
     margin: 0 10px 2px 10px;
 }
-
 #a {
     border: 1px solid #E5E5E5;
     background-repeat: repeat;
     background-color: #FFFFFF;
 }
-
-#body{
+#body {
     width: 100%;
     position: relative;
 }
-
 .copyright {
     text-align: center;
 }
-
 #figures {
     float: left;
     width: 120px;
     height: 300px;
     /*border: 1px solid #E5E5E5;*/
+    
     padding-top: 5px;
     padding-left: 5px;
     background-color: #F6F6F6;
 }
-
-#container{
+#container {
     position: fixed;
     top: 72px;
     bottom: 0px;
@@ -107,18 +160,18 @@ body{
     right: 260px;
     /*height: 600px;*/
 }
-#right{
+#right {
     float: right;
     /*overflow: scroll;*/
 }
-
-#edit{
+#edit {
     width: 240px;
     background-color: #F6F6F6;
     padding: 10px 10px 0 10px;
 }
 #edit hr {
     /*Separator's style*/
+    
     float: left;
     width: 100%;
     margin: 5px 0;
@@ -137,7 +190,8 @@ body{
     text-shadow: 0px 1px 0px #FFFFFF;
     margin-bottom: 3px;
 }
-#edit div.label input.text, #edit div.line input.text{
+#edit div.label input.text,
+#edit div.line input.text {
     float: right;
     margin: 0;
 }
@@ -150,11 +204,12 @@ body{
 #edit div.line {
     height: 22px;
     /*clear: both;*/
+    
     width: 100%;
     float: left;
     margin-bottom: 3px;
 }
-#edit div.line div.label{
+#edit div.line div.label {
     width: auto;
     margin-bottom: 0;
 }
@@ -176,40 +231,40 @@ body{
     color: #8B8B8B;
     font-size: 12px;
     /*text-decoration: none;*/
+    
     text-shadow: 0px 1px 0px #FFFFFF;
     /**For IE glow you need both width and filter but also shrink the <a> area :p
     width: 50px;
     filter: glow(color=FFFFFF,strength=1);    
     */
+    
     white-space: nowrap;
 }
-
 .toolbarText {
     color: #8B8B8B;
     font-size: 12px;
     /*text-decoration: none;*/
+    
     text-shadow: 0px 1px 0px #FFFFFF;
     /**For IE glow you need both width and filter but also shrink the <a> area :p
     width: 50px;
     filter: glow(color=FFFFFF,strength=1);
     */
 }
-.button{
+.button {
     margin: 2px;
     border: 1px dotted black;
-    text-decoration:  none;
+    text-decoration: none;
 }
-
-.button:hover{
+.button:hover {
     background-color: orange;
 }
-
-.darkgray{color: #333333;}
-
-
-.formTitle{
+.darkgray {
+    color: #333333;
+}
+.formTitle {
     background-image: url('../images/save-background.jpg');
-    background-repeat:repeat-x;
+    background-repeat: repeat-x;
     background-position: top left;
     height: 40px;
     margin: 2px;
@@ -219,41 +274,32 @@ body{
     padding-left: 10px;
     color: #8B8B8B;
 }
-
-.form{
+.form {
     background-color: #F6F6F6;
     border: 1px #E4E4E4 solid;
-    margin-right: auto; margin-left: auto;
+    margin-right: auto;
+    margin-left: auto;
 }
-
-.formField{
+.formField {
     height: 22px;
     border: 1px #E4E4E4 solid;
 }
-
 .formArea {
     border: 1px #E4E4E4 solid;
 }
-
 .formLabel {
     color: #8B8B8B;
     font-size: 14px;
     text-shadow: 0px 1px 0px #FFFFFF;
 }
-
-
-
-#dropdown
-{	
+#dropdown {
     margin: 0;
     padding: 0;
     z-index: 10;
     position: relative;
     /*display: none;*/
 }
-
-.dropdown_menu
-{	
+.dropdown_menu {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -261,9 +307,7 @@ body{
     font: bold 14px arial;
     z-index: 10;
 }
-
-.dropdown_menu a
-{	
+.dropdown_menu a {
     display: block;
     margin: 0 1px 0 0;
     padding: 8px 10px 4px 10px;
@@ -271,18 +315,15 @@ body{
     /*background: #5970B2;
     color: #FFF;
     */
+    
     color: #333;
     text-align: left;
     text-decoration: none;
 }
-
-.dropdown_menu a:hover
-{	
+.dropdown_menu a:hover {
     background: #ccc;
 }
-
-.dropdown_menu_panel
-{	
+.dropdown_menu_panel {
     position: absolute;
     visibility: hidden;
     margin: 0;
@@ -294,16 +335,16 @@ body{
     color: #8B8B8B;
     font-size: 12px;
     /*text-decoration: none;*/
+    
     text-shadow: 0px 1px 0px #FFFFFF;
     /**For IE glow you need both width and filter but also shrink the <a> area :p
     width: 50px;
     filter: glow(color=FFFFFF,strength=1);    
     */
+    
     white-space: nowrap;
 }
-
-.dropdown_menu_panel a
-{	
+.dropdown_menu_panel a {
     position: relative;
     display: block;
     margin: 0;
@@ -312,41 +353,35 @@ body{
     white-space: nowrap;
     text-align: left;
     text-decoration: none;
-    
     color: #8B8B8B;
     background: #eee;
 }
-
-.dropdown_menu_panel a:hover
-{	
-    background: #fff; 
+.dropdown_menu_panel a:hover {
+    background: #fff;
     color: #8B8B8B;
 }
-
-.license_warning{
-    background-color: white; 
-    border: 1px solid black; 
+.license_warning {
+    background-color: white;
+    border: 1px solid black;
     font-size: 20px;
 }
-
-#text-editor, #text-editor-tools {
+#text-editor,
+#text-editor-tools {
     display: none;
     z-index: 5;
     position: absolute;
 }
-
 #text-editor textarea {
     padding: 6px;
     overflow: hidden;
     resize: none;
     line-height: 125%;
-
     /* to prevent automatic line-breaks */
+    
     word-wrap: normal;
     white-space: pre;
     overflow-x: hidden;
 }
-
 #text-editor-tools {
     float: left;
     opacity: 0.90;
@@ -354,74 +389,62 @@ body{
     background-size: 100%;
     background-position: top left;
 }
-
-#text-editor.active, #text-editor-tools.active {
+#text-editor.active,
+#text-editor-tools.active {
     display: block;
 }
-
-#text-editor-tools .line, #text-editor .textLine {
+#text-editor-tools .line,
+#text-editor .textLine {
     float: left;
     margin-right: 1px;
 }
-
 #text-editor-tools .line select {
     float: left;
 }
-
-#text-editor .label, #text-editor-tools .label {
+#text-editor .label,
+#text-editor-tools .label {
     display: none;
 }
-
 #text-editor-tools .color_picker {
     margin-top: 2px;
 }
-
 #text-editor-tools .button-checker {
     text-decoration: underline;
     padding: 0px 4px;
     margin: 1px;
     cursor: pointer;
 }
-
 #text-editor-tools .button-checker[button-checked="true"] {
     border-style: inset;
 }
-
 #insert-image-dialog {
     display: none;
 }
-
-#insert-image-dialog h2{
+#insert-image-dialog h2 {
     margin: 0 0 30px 0;
 }
-
 #insert-image-dialog .insert-image-line {
     margin-bottom: 10px;
 }
-
 #insert-image-dialog .insert-image-line label {
     padding-right: 10px;
 }
-
 #insert-image-dialog .submit-container {
-    margin: 31px 0 0 0;;
+    margin: 31px 0 0 0;
+    ;
 }
-
-#insert-image-dialog .submit-container input{
+#insert-image-dialog .submit-container input {
     margin: auto;
     display: block;
     width: 100px;
     height: 32px;
 }
-
 #insert-image-dialog .insert-image-line .right-offset {
     float: right;
 }
-
 #insert-image-dialog .insert-image-line .url-input {
     width: 232px;
 }
-
 #upload-image-dialog {
     height: auto !important;
     width: 300px;
@@ -430,21 +453,17 @@ body{
     border: 2px solid black;
     padding: 10px;
 }
-
 #upload-image-error {
     color: red;
-    margin-top:15px;
+    margin-top: 15px;
 }
-
 #insert-image-reuse {
     width: 239px;
     margin-left: 29px;
 }
-
 #imageFile {
     margin-right: 34px;
 }
-
 #printFrame {
     position: fixed;
     top: 72px;

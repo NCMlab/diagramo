@@ -337,7 +337,7 @@ function lookupNode(myCP) {
     return -1;
 }
 
-function generateMatrix(){
+function generateAdjacencyMatrix(){
     var matrixString = "";
     var nodeArray = [];
     var tailArray = [];
@@ -366,8 +366,11 @@ function generateMatrix(){
     //glue[1].id1 is head
     //glue[1].id2 is connection head
     for (var i = 0; i < CONNECTOR_MANAGER.glues.length; i = i+2) {
-        tailArray.push(CONNECTOR_MANAGER.glues[i].id1);
-        headArray.push(CONNECTOR_MANAGER.glues[i+1].id1)
+        //remove the ones that aren't "figure"
+        if ((CONNECTOR_MANAGER.glues[i].type1 == "figure") && (CONNECTOR_MANAGER.glues[i+1].type1 == "figure")) {
+            tailArray.push(CONNECTOR_MANAGER.glues[i].id1);
+            headArray.push(CONNECTOR_MANAGER.glues[i+1].id1)
+        }
     }
 
     //initialize matrixArray
@@ -425,7 +428,6 @@ function generateMatrix(){
             else {
                 matrixString = matrixString.concat(matrixArray[row][col]);
             }
-
         }
         matrixString = matrixString.concat("\n");
     }
@@ -433,6 +435,328 @@ function generateMatrix(){
     //look in console to see matrix
     //console.log(matrixString);
 
+    return matrixString;
+}
+
+function generateAdjacencyMatrixTable(){
+    var nodeArray = [];
+    var tailArray = [];
+    var headArray = [];
+
+    var matrixString2 = "";
+    var matrixArray2 = [];
+    var figureNameArray = [];
+
+    for (var i = 0; i < STACK.figures.length; i++) {
+        //do something
+        figureNameArray.push(STACK.figures[i].primitives[1].str);
+    }
+
+    //connectionPoints
+    //CONNECTOR_MANAGER.connectionPoints[];
+
+    //glues
+    //CONNECTOR_MANAGER.glues[];
+
+    //debugger;
+
+    //get unique boxes to be our row and column headers
+    for (var i = 0; i < CONNECTOR_MANAGER.connectionPoints.length; i++) {
+        if ((CONNECTOR_MANAGER.connectionPoints[i].type == "figure") &&
+            ($.inArray(CONNECTOR_MANAGER.connectionPoints[i].parentId, nodeArray)) == -1) {
+            nodeArray.push(CONNECTOR_MANAGER.connectionPoints[i].parentId);
+        }
+    }
+
+    //come in glue pairs (ex. 0,1)
+    //glue[0].id1 is tail
+    //glue[0].id2 is connection tail
+    //glue[1].id1 is head
+    //glue[1].id2 is connection head
+    for (var i = 0; i < CONNECTOR_MANAGER.glues.length; i = i+2) {
+        //remove the ones that aren't "figure"
+        if ((CONNECTOR_MANAGER.glues[i].type1 == "figure") && (CONNECTOR_MANAGER.glues[i+1].type1 == "figure")) {
+            tailArray.push(CONNECTOR_MANAGER.glues[i].id1);
+            headArray.push(CONNECTOR_MANAGER.glues[i+1].id1)
+        }
+    }
+
+    //initialize matrixArray
+    for (var i = 0; i <= nodeArray.length; i++) {
+        matrixArray2[i] = [];
+    }
+
+    //set columns
+    for (var i = 0; i < nodeArray.length; i++) {
+        matrixArray2[0][i+1] = figureNameArray[i];
+    }
+
+    //set rows
+    for (var i = 0; i < nodeArray.length; i++) {
+        matrixArray2[i+1][0] = figureNameArray[i];
+    }
+
+    //fill matrix with adjacencies
+
+    //search head in CONNECTOR_MANAGER.connectionPoints[] to determine which 'node' it belongs to
+    //search tail in CONNECTOR_MANAGER.connectionPoints[] to determine which 'node' it belongs to
+
+    //debugger;
+
+    var iterations = headArray.length;
+
+    for (var i = 0; i < iterations; i++) {
+        var nodeHead;
+        var nodeTail;
+
+        //might want to replace this with 'pop' from front
+        var tempHeadCP = headArray.pop();
+        var tempTailCP = tailArray.pop();
+
+        //lookupNode: have a CP -> get a node
+        //then we look up node in our nodeArray to determine where it should be inserted in matrix
+        nodeHead = nodeArray.indexOf(lookupNode(tempHeadCP));
+        nodeTail = nodeArray.indexOf(lookupNode(tempTailCP));
+
+        //row header pointing to column header
+        matrixArray2[nodeTail+1][nodeHead+1] = 1;
+    }
+
+    //matrix generation
+
+    matrixString2 = matrixString2.concat("<table>")
+    for (var row = 0; row < matrixArray2.length; row++) {
+        matrixString2 = matrixString2.concat("<tr>")
+        for (var col = 0; col < matrixArray2.length; col++) {
+            if(row == 0 && col == 0) {
+                matrixString2 = matrixString2.concat("<td>-</td>");
+            }
+
+            else if(matrixArray2[row][col] == undefined){
+                matrixString2 = matrixString2.concat("<td>0</td>");
+            }
+
+            else {
+                matrixString2 = matrixString2.concat("<td>"+matrixArray2[row][col]+"</td>");
+            }
+        }
+        matrixString2 = matrixString2.concat("</tr>");
+    }
+
+    matrixString2 = matrixString2.concat("</table>");
+
+    //look in console to see matrix
+    //console.log(matrixString);
+
+    return matrixString2;
+}
+
+function lookupMatchingGlue(myCP){
+    for(var j = 0; j < CONNECTOR_MANAGER.glues.length; j++) {
+        if (myCP == CONNECTOR_MANAGER.glues[j].id2) {
+            //console.log("id: " + CONNECTOR_MANAGER.connectionPoints[j].parentId);
+            return CONNECTOR_MANAGER.glues[j].id1;
+        }
+    }
+
+    return -1;
+}
+
+//agbl edit
+function generateInteractionMatrix(){
+    var matrixString = "";
+    var nodeArray = [];
+    var originatorArray = [];
+    //var midpointArray = [];
+    var tailInteractionArray = [];
+    var headInteractionArray = [];
+    var matrixArray = [];
+
+    //get unique boxes to be our row and column headers
+    for (var i = 0; i < CONNECTOR_MANAGER.connectionPoints.length; i++) {
+        if ((CONNECTOR_MANAGER.connectionPoints[i].type == "figure") &&
+            ($.inArray(CONNECTOR_MANAGER.connectionPoints[i].parentId, nodeArray)) == -1) {
+            nodeArray.push(CONNECTOR_MANAGER.connectionPoints[i].parentId);
+        }
+    }
+
+    //debugger;
+
+    //come in glue pairs (ex. 0,1)
+    //glue[0].id1 is tail
+    //glue[0].id2 is connection tail
+    //glue[1].id1 is head
+    //glue[1].id2 is connection head
+    for (var i = 1; i < CONNECTOR_MANAGER.glues.length; i = i+2) {
+        //remove the ones that aren't "connector"
+        if ((CONNECTOR_MANAGER.glues[i].type1 == "connector") && (CONNECTOR_MANAGER.glues[i].type2 == "connector")) {
+            originatorArray.push(lookupNode(CONNECTOR_MANAGER.glues[i-1].id1));
+            //midpointArray.push(lookupNode(CONNECTOR_MANAGER.glues[i].id1));
+            tailInteractionArray.push(lookupNode(lookupMatchingGlue(CONNECTOR_MANAGER.glues[i].id1 - 1)));
+            headInteractionArray.push(lookupNode(lookupMatchingGlue(CONNECTOR_MANAGER.glues[i].id1 + 1)));
+        }
+    }
+
+    //now we have originator, tail, head so we can make matrices
+
+    //for as many times in origination (i.e. all of our 'interactions')
+    //come back to this after
+
+    //debugger;
+
+    var iterations = originatorArray.length;
+
+    for(var x = 0; x < iterations; x++) {
+        //initialize matrixArray
+        for (var i = 0; i <= nodeArray.length; i++) {
+            matrixArray[i] = [];
+        }
+
+        //set columns
+        for (var i = 0; i < nodeArray.length; i++) {
+            matrixArray[0][i+1] = nodeArray[i];
+        }
+
+        //set rows
+        for (var i = 0; i < nodeArray.length; i++) {
+            matrixArray[i+1][0] = nodeArray[i];
+        }
+
+
+        //fill in interaction for originator
+        var current = nodeArray.indexOf(originatorArray.pop());
+        var interactionTail = nodeArray.indexOf(tailInteractionArray.pop());
+        var interactionHead = nodeArray.indexOf(headInteractionArray.pop());
+
+        matrixArray[current+1][interactionTail+1] = 1;
+        matrixArray[current+1][interactionHead+1] = 1;
+
+        //debugger;
+
+        //matrix generation
+        for (var row = 0; row < matrixArray.length; row++) {
+            for (var col = 0; col < matrixArray.length; col++) {
+                if(row == 0 && col == 0) {
+                    matrixString = matrixString.concat("-");
+                }
+
+                else if(matrixArray[row][col] == undefined){
+                    matrixString = matrixString.concat("0");
+                }
+
+                else {
+                    matrixString = matrixString.concat(matrixArray[row][col]);
+                }
+            }
+            matrixString = matrixString.concat("\n");
+        }
+
+        matrixString = matrixString.concat("\n");
+    }
+    return matrixString;
+}
+
+//agbl edit
+function generateInteractionMatrixTable(){
+    var matrixString = "";
+    var nodeArray = [];
+    var originatorArray = [];
+    //var midpointArray = [];
+    var tailInteractionArray = [];
+    var headInteractionArray = [];
+    var matrixArray = [];
+    var figureNameArray = [];
+
+    for (var i = 0; i < STACK.figures.length; i++) {
+        figureNameArray.push(STACK.figures[i].primitives[1].str);
+    }
+
+
+    //get unique boxes to be our row and column headers
+    for (var i = 0; i < CONNECTOR_MANAGER.connectionPoints.length; i++) {
+        if ((CONNECTOR_MANAGER.connectionPoints[i].type == "figure") &&
+            ($.inArray(CONNECTOR_MANAGER.connectionPoints[i].parentId, nodeArray)) == -1) {
+            nodeArray.push(CONNECTOR_MANAGER.connectionPoints[i].parentId);
+        }
+    }
+
+    //debugger;
+
+    //come in glue pairs (ex. 0,1)
+    //glue[0].id1 is tail
+    //glue[0].id2 is connection tail
+    //glue[1].id1 is head
+    //glue[1].id2 is connection head
+    for (var i = 1; i < CONNECTOR_MANAGER.glues.length; i = i+2) {
+        //remove the ones that aren't "connector"
+        if ((CONNECTOR_MANAGER.glues[i].type1 == "connector") && (CONNECTOR_MANAGER.glues[i].type2 == "connector")) {
+            originatorArray.push(lookupNode(CONNECTOR_MANAGER.glues[i-1].id1));
+            //midpointArray.push(lookupNode(CONNECTOR_MANAGER.glues[i].id1));
+            tailInteractionArray.push(lookupNode(lookupMatchingGlue(CONNECTOR_MANAGER.glues[i].id1 - 1)));
+            headInteractionArray.push(lookupNode(lookupMatchingGlue(CONNECTOR_MANAGER.glues[i].id1 + 1)));
+        }
+    }
+
+    //now we have originator, tail, head so we can make matrices
+
+    //for as many times in origination (i.e. all of our 'interactions')
+    //come back to this after
+
+    //debugger;
+
+    var iterations = originatorArray.length;
+
+    matrixString = matrixString.concat("<h3>Interaction Matrices:</h3>");
+
+    for(var x = 0; x < iterations; x++) {
+        //initialize matrixArray
+        for (var i = 0; i <= nodeArray.length; i++) {
+            matrixArray[i] = [];
+        }
+
+        //set columns
+        for (var i = 0; i < nodeArray.length; i++) {
+            matrixArray[0][i+1] = figureNameArray[i];
+        }
+
+        //set rows
+        for (var i = 0; i < nodeArray.length; i++) {
+            matrixArray[i+1][0] = figureNameArray[i];
+        }
+
+
+        //fill in interaction for originator
+        var current = nodeArray.indexOf(originatorArray.pop());
+        var interactionTail = nodeArray.indexOf(tailInteractionArray.pop());
+        var interactionHead = nodeArray.indexOf(headInteractionArray.pop());
+
+        matrixArray[current+1][interactionTail+1] = 1;
+        matrixArray[current+1][interactionHead+1] = 1;
+
+        //debugger;
+
+        //matrix generation
+        matrixString = matrixString.concat("<table>");
+        for (var row = 0; row < matrixArray.length; row++) {
+            matrixString = matrixString.concat("<tr>");
+            for (var col = 0; col < matrixArray.length; col++) {
+                if(row == 0 && col == 0) {
+                    matrixString = matrixString.concat("<td>-</td>");
+                }
+
+                else if(matrixArray[row][col] == undefined){
+                    matrixString = matrixString.concat("<td>0</td>");
+                }
+
+                else {
+                    matrixString = matrixString.concat("<td>"+matrixArray[row][col]+"</td>");
+                }
+            }
+            matrixString = matrixString.concat("<tr>");
+        }
+
+        matrixString = matrixString.concat("</table><br>");
+    }
     return matrixString;
 }
 

@@ -101,7 +101,7 @@ function Style(){
     this.lineStyle = null; //set to null so it can be inherited from parents
 
     //ckand edit, added line equation as a property
-    this.lineEquation = null; //set to null so it can be inherited from parents
+    this.lineEquation = 'linear'; //default to linear
 
     /**Image used*/
     this.image = null;
