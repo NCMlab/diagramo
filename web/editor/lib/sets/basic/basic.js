@@ -17,22 +17,12 @@ limitations under the License.
 */
 
 /**Figure set declaration*/
+//ckand edit, removing the other figures so it does not break in firefox
 figureSets["basic"] = {
     name: 'Basic',
     description : 'A basic set of figures',
     figures: [
-        {figureFunction: "RoundedRectangle", image: "rounded_rectangle.png"},
-        {figureFunction: "Rectangle", image: "rectangle.png"},
-        {figureFunction: "Square", image: "square.png"},
-        {figureFunction: "Circle", image: "circle.png"},
-        {figureFunction: "Diamond", image: "diamond.png"},
-        {figureFunction: "Parallelogram", image: "parallelogram.png"},
-        {figureFunction: "Ellipse", image: "ellipse.png"},
-        {figureFunction: "RightTriangle", image: "right_triangle.png"},
-        {figureFunction: "Pentagon", image: "pentagon.png"},
-        {figureFunction: "Hexagon", image: "hexagon.png"},
-        {figureFunction: "Octogon", image: "octogon.png"},
-        {figureFunction: "Text", image: "text.png"}
+        {figureFunction: "Rectangle", image: "rectangle.png"}
     ]
 };
 
@@ -102,7 +92,7 @@ function figure_Rectangle(x, y)
     f.properties.push(new BuilderProperty('Fill Style', 'style.fillStyle', BuilderProperty.TYPE_COLOR));
     f.properties.push(new BuilderProperty('Line Width', 'style.lineWidth',BuilderProperty.TYPE_LINE_WIDTH));
     f.properties.push(new BuilderProperty('Line Style', 'style.lineStyle',BuilderProperty.TYPE_LINE_STYLE));
-    
+
     f.properties.push(new BuilderProperty(BuilderProperty.SEPARATOR));
     f.properties.push(new BuilderProperty('URL', 'url', BuilderProperty.TYPE_URL));
 
@@ -183,7 +173,7 @@ function figure_Square(x,y)
     f.properties.push(new BuilderProperty('Fill Style', 'style.fillStyle', BuilderProperty.TYPE_COLOR));
     f.properties.push(new BuilderProperty('Line Width', 'style.lineWidth',BuilderProperty.TYPE_LINE_WIDTH));//f.properties.push(new BuilderProperty('Vertical Alignment ', 'primitives.1.valign', Text.VALIGNMENTS));
     f.properties.push(new BuilderProperty('Line Style', 'style.lineStyle',BuilderProperty.TYPE_LINE_STYLE));
-    
+
     f.properties.push(new BuilderProperty(BuilderProperty.SEPARATOR));
     f.properties.push(new BuilderProperty('URL', 'url', BuilderProperty.TYPE_URL));
 
@@ -233,10 +223,10 @@ function figure_Circle(x,y)
     f.properties.push(new BuilderProperty('Fill Style', 'style.fillStyle', BuilderProperty.TYPE_COLOR));
     f.properties.push(new BuilderProperty('Line Width', 'style.lineWidth',BuilderProperty.TYPE_LINE_WIDTH));//f.properties.push(new BuilderProperty('Vertical Alignment ', 'primitives.1.valign', Text.VALIGNMENTS);
     f.properties.push(new BuilderProperty('Line Style', 'style.lineStyle',BuilderProperty.TYPE_LINE_STYLE));
-    
+
     f.properties.push(new BuilderProperty(BuilderProperty.SEPARATOR));
     f.properties.push(new BuilderProperty('URL', 'url', BuilderProperty.TYPE_URL));
-    
+
     var c = new Arc(x, y, FigureDefaults.radiusSize, 0, 360, false, 0);
 
     f.addPrimitive(c);
@@ -279,7 +269,7 @@ function figure_Diamond(x,y)
     f.properties.push(new BuilderProperty('Line Width', 'style.lineWidth',BuilderProperty.TYPE_LINE_WIDTH))
     //f.properties.push(new BuilderProperty('Vertical Alignment ', 'primitives.1.valign', Text.VALIGNMENTS);
     f.properties.push(new BuilderProperty('Line Style', 'style.lineStyle',BuilderProperty.TYPE_LINE_STYLE));
-    
+
     f.properties.push(new BuilderProperty(BuilderProperty.SEPARATOR));
     f.properties.push(new BuilderProperty('URL', 'url', BuilderProperty.TYPE_URL));
 
@@ -302,7 +292,7 @@ function figure_Diamond(x,y)
 
 function figure_Parallelogram(x,y)
 {
-    
+
     var f = new Figure("Diamond");
     f.style.fillStyle = FigureDefaults.fillStyle;
     f.style.strokeStyle = FigureDefaults.strokeStyle;
@@ -320,16 +310,16 @@ function figure_Parallelogram(x,y)
     f.properties.push(new BuilderProperty('Line Width', 'style.lineWidth',BuilderProperty.TYPE_LINE_WIDTH));
     //f.properties.push(new BuilderProperty('Vertical Alignment ', 'primitives.1.valign', Text.VALIGNMENTS);
     f.properties.push(new BuilderProperty('Line Style', 'style.lineStyle',BuilderProperty.TYPE_LINE_STYLE));
-    
+
     f.properties.push(new BuilderProperty(BuilderProperty.SEPARATOR));
     f.properties.push(new BuilderProperty('URL', 'url', BuilderProperty.TYPE_URL));
-    
+
     var r = new Polygon();
     r.addPoint(new Point(x + 10, y));
     r.addPoint(new Point(x + FigureDefaults.segmentSize + 10, y));
     r.addPoint(new Point(x + FigureDefaults.segmentSize + FigureDefaults.parallelsOffsetSize, y + FigureDefaults.segmentShortSize));
     r.addPoint(new Point(x + FigureDefaults.parallelsOffsetSize, y + FigureDefaults.segmentShortSize));
-    
+
     f.addPrimitive(r);
 
     var t2 = new Text(FigureDefaults.textStr, x + FigureDefaults.segmentSize/2 + FigureDefaults.parallelsOffsetSize/2 + 5, y + FigureDefaults.segmentShortSize/2, FigureDefaults.textFont, FigureDefaults.textSize);
@@ -371,7 +361,7 @@ function figure_Ellipse(x,y)
     f.properties.push(new BuilderProperty('Line Width', 'style.lineWidth',BuilderProperty.TYPE_LINE_WIDTH));
     //f.properties.push(new BuilderProperty('Vertical Alignment ', 'primitives.1.valign', Text.VALIGNMENTS);
     f.properties.push(new BuilderProperty('Line Style', 'style.lineStyle',BuilderProperty.TYPE_LINE_STYLE));
-    
+
     f.properties.push(new BuilderProperty(BuilderProperty.SEPARATOR));
     f.properties.push(new BuilderProperty('URL', 'url', BuilderProperty.TYPE_URL));
 
@@ -416,7 +406,7 @@ function figure_RightTriangle(x,y)
     e.properties.push(new BuilderProperty('Fill Style', 'style.fillStyle', BuilderProperty.TYPE_COLOR));
     e.properties.push(new BuilderProperty('Line Width', 'style.lineWidth',BuilderProperty.TYPE_LINE_WIDTH));//f.properties.push(new BuilderProperty('Vertical Alignment ', 'primitives.1.valign', Text.VALIGNMENTS);
     e.properties.push(new BuilderProperty('Line Style', 'style.lineStyle',BuilderProperty.TYPE_LINE_STYLE));
-    
+
     e.properties.push(new BuilderProperty(BuilderProperty.SEPARATOR));
     e.properties.push(new BuilderProperty('URL', 'url', BuilderProperty.TYPE_URL));
 
@@ -465,15 +455,15 @@ function figure_Pentagon(x,y)
     f.properties.push(new BuilderProperty('Line Width', 'style.lineWidth',BuilderProperty.TYPE_LINE_WIDTH));
     //f.properties.push(new BuilderProperty('Vertical Alignment ', 'primitives.1.valign', Text.VALIGNMENTS);
     f.properties.push(new BuilderProperty('Line Style', 'style.lineStyle',BuilderProperty.TYPE_LINE_STYLE));
-    
+
     f.properties.push(new BuilderProperty(BuilderProperty.SEPARATOR));
     f.properties.push(new BuilderProperty('URL', 'url', BuilderProperty.TYPE_URL));
-    
+
     f.addPrimitive(r);
 
     /**
      * Alex: - Why divided by 11?
-     * Artyom: - Value found in experimental way: in Pentagon (x,y) point is a 
+     * Artyom: - Value found in experimental way: in Pentagon (x,y) point is a
      *  little above center, in little piece of radius - for R/11 it works.*/
     var t2 = new Text(FigureDefaults.textStr, x, y - FigureDefaults.radiusSize/11, FigureDefaults.textFont, FigureDefaults.textSize);
     t2.style.fillStyle = FigureDefaults.textColor;
@@ -517,10 +507,10 @@ function figure_Hexagon(x,y)
     f.properties.push(new BuilderProperty('Line Width', 'style.lineWidth',BuilderProperty.TYPE_LINE_WIDTH));
     //f.properties.push(new BuilderProperty('Vertical Alignment ', 'primitives.1.valign', Text.VALIGNMENTS);
     f.properties.push(new BuilderProperty('Line Style', 'style.lineStyle',BuilderProperty.TYPE_LINE_STYLE));
-    
+
     f.properties.push(new BuilderProperty(BuilderProperty.SEPARATOR));
     f.properties.push(new BuilderProperty('URL', 'url', BuilderProperty.TYPE_URL));
-    
+
     f.addPrimitive(r);
 
     var t2 = new Text(FigureDefaults.textStr, x, y, FigureDefaults.textFont, FigureDefaults.textSize);
@@ -571,7 +561,7 @@ function figure_Octogon(x,y)
     f.properties.push(new BuilderProperty('Line Width', 'style.lineWidth',BuilderProperty.TYPE_LINE_WIDTH));
     //f.properties.push(new BuilderProperty('Vertical Alignment ', 'primitives.1.valign', Text.VALIGNMENTS);
     f.properties.push(new BuilderProperty('Line Style', 'style.lineStyle',BuilderProperty.TYPE_LINE_STYLE));
-    
+
     f.properties.push(new BuilderProperty(BuilderProperty.SEPARATOR));
     f.properties.push(new BuilderProperty('URL', 'url', BuilderProperty.TYPE_URL));
 
@@ -610,7 +600,7 @@ function figure_Text(x,y)
 
     f.properties.push(new BuilderProperty('Text', 'primitives.0.str', BuilderProperty.TYPE_TEXT));
 
-    //when we change textSize we need to transform the connectionPoints, 
+    //when we change textSize we need to transform the connectionPoints,
     //this is the only time connecitonPoints get transformed for text
     f.properties.push(new BuilderProperty('Text Size ', 'primitives.0.size', BuilderProperty.TYPE_TEXT_FONT_SIZE));
     f.properties.push(new BuilderProperty('Font ', 'primitives.0.font', BuilderProperty.TYPE_TEXT_FONT_FAMILY));
@@ -627,7 +617,7 @@ function figure_Text(x,y)
     t2.style.fillStyle = FigureDefaults.textColor;
 
     f.addPrimitive(t2);
-    
+
     //lets set up our connection points to be right on the bounds
 //    var bounds = f.getBounds();
 //    var width = bounds[2] - bounds[0];
@@ -663,7 +653,7 @@ function figure_RoundedRectangle(x,y)
 
     f.properties.push(new BuilderProperty(BuilderProperty.SEPARATOR));
     f.properties.push(new BuilderProperty('URL', 'url', BuilderProperty.TYPE_URL));
-    
+
     var p = new Path();
     var hShrinker = 10;
     var vShrinker = 6;
