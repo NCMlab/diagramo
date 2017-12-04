@@ -344,6 +344,8 @@ function generateAdjacencyMatrix(){
     var headArray = [];
     var matrixArray = [];
 
+    //debugger;
+
     //connectionPoints
     //CONNECTOR_MANAGER.connectionPoints[];
 
@@ -353,12 +355,11 @@ function generateAdjacencyMatrix(){
     //debugger;
 
     //get unique boxes to be our row and column headers
-    for (var i = 0; i < CONNECTOR_MANAGER.connectionPoints.length; i++) {
-        if ((CONNECTOR_MANAGER.connectionPoints[i].type == "figure") &&
-            ($.inArray(CONNECTOR_MANAGER.connectionPoints[i].parentId, nodeArray)) == -1) {
-            nodeArray.push(CONNECTOR_MANAGER.connectionPoints[i].parentId);
-        }
+    for (var i = 0; i < STACK.figures.length; i++) {
+        //do something
+        nodeArray.push(STACK.figures[i].id);
     }
+
 
     //come in glue pairs (ex. 0,1)
     //glue[0].id1 is tail
@@ -447,9 +448,11 @@ function generateAdjacencyMatrixTable(){
     var matrixArray2 = [];
     var figureNameArray = [];
 
+    //get unique boxes to be our row and column headers
     for (var i = 0; i < STACK.figures.length; i++) {
         //do something
         figureNameArray.push(STACK.figures[i].primitives[1].str);
+        nodeArray.push(STACK.figures[i].id);
     }
 
     //connectionPoints
@@ -460,13 +463,12 @@ function generateAdjacencyMatrixTable(){
 
     //debugger;
 
-    //get unique boxes to be our row and column headers
-    for (var i = 0; i < CONNECTOR_MANAGER.connectionPoints.length; i++) {
+    /*for (var i = 0; i < CONNECTOR_MANAGER.connectionPoints.length; i++) {
         if ((CONNECTOR_MANAGER.connectionPoints[i].type == "figure") &&
             ($.inArray(CONNECTOR_MANAGER.connectionPoints[i].parentId, nodeArray)) == -1) {
             nodeArray.push(CONNECTOR_MANAGER.connectionPoints[i].parentId);
         }
-    }
+    }*/
 
     //come in glue pairs (ex. 0,1)
     //glue[0].id1 is tail
@@ -573,12 +575,11 @@ function generateInteractionMatrix(){
     var matrixArray = [];
 
     //get unique boxes to be our row and column headers
-    for (var i = 0; i < CONNECTOR_MANAGER.connectionPoints.length; i++) {
-        if ((CONNECTOR_MANAGER.connectionPoints[i].type == "figure") &&
-            ($.inArray(CONNECTOR_MANAGER.connectionPoints[i].parentId, nodeArray)) == -1) {
-            nodeArray.push(CONNECTOR_MANAGER.connectionPoints[i].parentId);
-        }
+    for (var i = 0; i < STACK.figures.length; i++) {
+        //do something
+        nodeArray.push(STACK.figures[i].id);
     }
+
 
     //debugger;
 
@@ -667,18 +668,13 @@ function generateInteractionMatrixTable(){
     var matrixArray = [];
     var figureNameArray = [];
 
-    for (var i = 0; i < STACK.figures.length; i++) {
-        figureNameArray.push(STACK.figures[i].primitives[1].str);
-    }
-
-
     //get unique boxes to be our row and column headers
-    for (var i = 0; i < CONNECTOR_MANAGER.connectionPoints.length; i++) {
-        if ((CONNECTOR_MANAGER.connectionPoints[i].type == "figure") &&
-            ($.inArray(CONNECTOR_MANAGER.connectionPoints[i].parentId, nodeArray)) == -1) {
-            nodeArray.push(CONNECTOR_MANAGER.connectionPoints[i].parentId);
-        }
+    for (var i = 0; i < STACK.figures.length; i++) {
+        //do something
+        figureNameArray.push(STACK.figures[i].primitives[1].str);
+        nodeArray.push(STACK.figures[i].id);
     }
+
 
     //debugger;
 
