@@ -337,29 +337,44 @@ function lookupNode(myCP) {
     return -1;
 }
 
+function lookupConnectorEquation(myCP) {
+    for(var j = 0; j < CONNECTOR_MANAGER.connectors.length; j++) {
+        if (myCP == CONNECTOR_MANAGER.connectors[j].id) {
+            //console.log("id: " + CONNECTOR_MANAGER.connectionPoints[j].parentId);
+            if (CONNECTOR_MANAGER.connectors[j].style.lineEquation == "linear") {
+                return 1;
+            }
+
+            else if (CONNECTOR_MANAGER.connectors[j].style.lineEquation == "quadratic") {
+                return 2;
+            }
+
+            else if (CONNECTOR_MANAGER.connectors[j].style.lineEquation == "exponential") {
+                return 3;
+            }
+
+            else {
+                return -1;
+            }
+        }
+    }
+
+    return -1;
+}
+
 function generateAdjacencyMatrix(){
     var matrixString = "";
     var nodeArray = [];
     var tailArray = [];
     var headArray = [];
     var matrixArray = [];
-
-    //debugger;
-
-    //connectionPoints
-    //CONNECTOR_MANAGER.connectionPoints[];
-
-    //glues
-    //CONNECTOR_MANAGER.glues[];
-
-    //debugger;
+    var connectorArray = [];
 
     //get unique boxes to be our row and column headers
     for (var i = 0; i < STACK.figures.length; i++) {
         //do something
         nodeArray.push(STACK.figures[i].id);
     }
-
 
     //come in glue pairs (ex. 0,1)
     //glue[0].id1 is tail
@@ -370,7 +385,8 @@ function generateAdjacencyMatrix(){
         //remove the ones that aren't "figure"
         if ((CONNECTOR_MANAGER.glues[i].type1 == "figure") && (CONNECTOR_MANAGER.glues[i+1].type1 == "figure")) {
             tailArray.push(CONNECTOR_MANAGER.glues[i].id1);
-            headArray.push(CONNECTOR_MANAGER.glues[i+1].id1)
+            connectorArray.push(lookupNode(CONNECTOR_MANAGER.glues[i].id2));
+            headArray.push(CONNECTOR_MANAGER.glues[i+1].id1);
         }
     }
 
@@ -394,8 +410,6 @@ function generateAdjacencyMatrix(){
     //search head in CONNECTOR_MANAGER.connectionPoints[] to determine which 'node' it belongs to
     //search tail in CONNECTOR_MANAGER.connectionPoints[] to determine which 'node' it belongs to
 
-    //debugger;
-
     var iterations = headArray.length;
 
     for (var i = 0; i < iterations; i++) {
@@ -406,13 +420,16 @@ function generateAdjacencyMatrix(){
         var tempHeadCP = headArray.pop();
         var tempTailCP = tailArray.pop();
 
+        //lookup style
+        var connectorEquation = lookupConnectorEquation(connectorArray.pop());
+        
         //lookupNode: have a CP -> get a node
         //then we look up node in our nodeArray to determine where it should be inserted in matrix
         nodeHead = nodeArray.indexOf(lookupNode(tempHeadCP));
         nodeTail = nodeArray.indexOf(lookupNode(tempTailCP));
 
         //row header pointing to column header
-        matrixArray[nodeTail+1][nodeHead+1] = 1;
+        matrixArray[nodeTail+1][nodeHead+1] = connectorEquation;
     }
 
     //matrix generation
@@ -443,10 +460,13 @@ function generateAdjacencyMatrixTable(){
     var nodeArray = [];
     var tailArray = [];
     var headArray = [];
+    var connectorArray = [];
 
     var matrixString2 = "";
     var matrixArray2 = [];
     var figureNameArray = [];
+
+    //debugger;
 
     //get unique boxes to be our row and column headers
     for (var i = 0; i < STACK.figures.length; i++) {
@@ -454,21 +474,6 @@ function generateAdjacencyMatrixTable(){
         figureNameArray.push(STACK.figures[i].primitives[1].str);
         nodeArray.push(STACK.figures[i].id);
     }
-
-    //connectionPoints
-    //CONNECTOR_MANAGER.connectionPoints[];
-
-    //glues
-    //CONNECTOR_MANAGER.glues[];
-
-    //debugger;
-
-    /*for (var i = 0; i < CONNECTOR_MANAGER.connectionPoints.length; i++) {
-        if ((CONNECTOR_MANAGER.connectionPoints[i].type == "figure") &&
-            ($.inArray(CONNECTOR_MANAGER.connectionPoints[i].parentId, nodeArray)) == -1) {
-            nodeArray.push(CONNECTOR_MANAGER.connectionPoints[i].parentId);
-        }
-    }*/
 
     //come in glue pairs (ex. 0,1)
     //glue[0].id1 is tail
@@ -479,7 +484,8 @@ function generateAdjacencyMatrixTable(){
         //remove the ones that aren't "figure"
         if ((CONNECTOR_MANAGER.glues[i].type1 == "figure") && (CONNECTOR_MANAGER.glues[i+1].type1 == "figure")) {
             tailArray.push(CONNECTOR_MANAGER.glues[i].id1);
-            headArray.push(CONNECTOR_MANAGER.glues[i+1].id1)
+            connectorArray.push(lookupNode(CONNECTOR_MANAGER.glues[i].id2));
+            headArray.push(CONNECTOR_MANAGER.glues[i+1].id1);
         }
     }
 
@@ -515,16 +521,21 @@ function generateAdjacencyMatrixTable(){
         var tempHeadCP = headArray.pop();
         var tempTailCP = tailArray.pop();
 
+        //lookup style
+        var connectorEquation = lookupConnectorEquation(connectorArray.pop());
+
         //lookupNode: have a CP -> get a node
         //then we look up node in our nodeArray to determine where it should be inserted in matrix
         nodeHead = nodeArray.indexOf(lookupNode(tempHeadCP));
         nodeTail = nodeArray.indexOf(lookupNode(tempTailCP));
 
         //row header pointing to column header
-        matrixArray2[nodeTail+1][nodeHead+1] = 1;
+        matrixArray2[nodeTail+1][nodeHead+1] = connectorEquation;
     }
 
     //matrix generation
+
+    matrixString2 = matrixString2.concat("<h3>Adjacency Matrix:</h3>");
 
     matrixString2 = matrixString2.concat("<table>")
     for (var row = 0; row < matrixArray2.length; row++) {
@@ -573,13 +584,13 @@ function generateInteractionMatrix(){
     var tailInteractionArray = [];
     var headInteractionArray = [];
     var matrixArray = [];
+    var connectorArray = [];
 
     //get unique boxes to be our row and column headers
     for (var i = 0; i < STACK.figures.length; i++) {
         //do something
         nodeArray.push(STACK.figures[i].id);
     }
-
 
     //debugger;
 
@@ -593,6 +604,7 @@ function generateInteractionMatrix(){
         if ((CONNECTOR_MANAGER.glues[i].type1 == "connector") && (CONNECTOR_MANAGER.glues[i].type2 == "connector")) {
             originatorArray.push(lookupNode(CONNECTOR_MANAGER.glues[i-1].id1));
             //midpointArray.push(lookupNode(CONNECTOR_MANAGER.glues[i].id1));
+            connectorArray.push(lookupNode(CONNECTOR_MANAGER.glues[i-1].id2));
             tailInteractionArray.push(lookupNode(lookupMatchingGlue(CONNECTOR_MANAGER.glues[i].id1 - 1)));
             headInteractionArray.push(lookupNode(lookupMatchingGlue(CONNECTOR_MANAGER.glues[i].id1 + 1)));
         }
@@ -629,8 +641,10 @@ function generateInteractionMatrix(){
         var interactionTail = nodeArray.indexOf(tailInteractionArray.pop());
         var interactionHead = nodeArray.indexOf(headInteractionArray.pop());
 
-        matrixArray[current+1][interactionTail+1] = 1;
-        matrixArray[current+1][interactionHead+1] = 1;
+        var connectorEquation = lookupConnectorEquation(connectorArray.pop());
+
+        matrixArray[current+1][interactionTail+1] = connectorEquation;
+        matrixArray[current+1][interactionHead+1] = connectorEquation;
 
         //debugger;
 
@@ -667,6 +681,7 @@ function generateInteractionMatrixTable(){
     var headInteractionArray = [];
     var matrixArray = [];
     var figureNameArray = [];
+    var connectorArray = [];
 
     //get unique boxes to be our row and column headers
     for (var i = 0; i < STACK.figures.length; i++) {
@@ -688,6 +703,7 @@ function generateInteractionMatrixTable(){
         if ((CONNECTOR_MANAGER.glues[i].type1 == "connector") && (CONNECTOR_MANAGER.glues[i].type2 == "connector")) {
             originatorArray.push(lookupNode(CONNECTOR_MANAGER.glues[i-1].id1));
             //midpointArray.push(lookupNode(CONNECTOR_MANAGER.glues[i].id1));
+            connectorArray.push(lookupNode(CONNECTOR_MANAGER.glues[i-1].id2));
             tailInteractionArray.push(lookupNode(lookupMatchingGlue(CONNECTOR_MANAGER.glues[i].id1 - 1)));
             headInteractionArray.push(lookupNode(lookupMatchingGlue(CONNECTOR_MANAGER.glues[i].id1 + 1)));
         }
@@ -720,14 +736,15 @@ function generateInteractionMatrixTable(){
             matrixArray[i+1][0] = figureNameArray[i];
         }
 
-
         //fill in interaction for originator
         var current = nodeArray.indexOf(originatorArray.pop());
         var interactionTail = nodeArray.indexOf(tailInteractionArray.pop());
         var interactionHead = nodeArray.indexOf(headInteractionArray.pop());
 
-        matrixArray[current+1][interactionTail+1] = 1;
-        matrixArray[current+1][interactionHead+1] = 1;
+        var connectorEquation = lookupConnectorEquation(connectorArray.pop());
+
+        matrixArray[current+1][interactionTail+1] = connectorEquation;
+        matrixArray[current+1][interactionHead+1] = connectorEquation;
 
         //debugger;
 
